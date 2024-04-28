@@ -540,7 +540,7 @@ public class Auction {
 
 		try{
             //    	conn = DriverManager.getConnection("jdbc:postgresql://localhost/"+args[0], args[0], args[1]); 
-            Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost/bnam", "s20311486", "urin1223%");
+            Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost/s20311486", "s20311486", "changethis");
 			Statement stmt = conn.createStatement();
 			ResultSet ttt = stmt.executeQuery("select * from something");
 			ResultSetMetaData rsmd = ttt.getMetaData();
