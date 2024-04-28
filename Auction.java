@@ -542,13 +542,10 @@ public class Auction {
             //    	conn = DriverManager.getConnection("jdbc:postgresql://localhost/"+args[0], args[0], args[1]); 
             Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost/bnam", "s20311486", "urin1223%");
 			Statement stmt = conn.createStatement();
-			ResultSet ttt = stmt.executeQuery("select * from instructor");
+			ResultSet ttt = stmt.executeQuery("select * from something");
 			ResultSetMetaData rsmd = ttt.getMetaData();
 			for(int i=1; i<=rsmd.getColumnCount(); i++) {
 				System.out.println(rsmd.getColumnName(i));
-			}
-			while(ttt.next()) {
-				System.out.println(ttt.getString("dept_name") + " " + ttt.getFloat(2));
 			}
 			stmt.close();
 		}
