@@ -542,6 +542,10 @@ public class Auction {
             Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost/bnam", "bnam", "changethis");
 			Statement stmt = conn.createStatement();
 			ResultSet ttt = stmt.executeQuery("select * from instructor");
+			ResultSetMetaData rsmd = ttt.getMetaData();
+			for(int i=1; i<=rsmd.getColumnCount(); i++) {
+				System.out.println(rsmd.getColumnName(i));
+			}
 			while(ttt.next()) {
 				System.out.println(ttt.getString("dept_name") + " " + ttt.getFloat(2));
 			}
