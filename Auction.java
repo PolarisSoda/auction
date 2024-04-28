@@ -536,24 +536,15 @@ public class Auction {
 			System.out.println("Usage: java Auction postgres_id password");
 			System.exit(1);
 		}
-
-
+		
 		try{
             //    	conn = DriverManager.getConnection("jdbc:postgresql://localhost/"+args[0], args[0], args[1]); 
             Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost/s20311486", "s20311486", "urin1223%");
-			Statement stmt = conn.createStatement();
-			ResultSet ttt = stmt.executeQuery("select * from something");
-			ResultSetMetaData rsmd = ttt.getMetaData();
-			for(int i=1; i<=rsmd.getColumnCount(); i++) {
-				System.out.println(rsmd.getColumnName(i));
-			}
-			stmt.close();
 		}
 		catch(SQLException e){
 			System.out.println("SQLException : " + e);	
 			System.exit(1);
 		}
-		
 		
 		do {
 			username = null;
