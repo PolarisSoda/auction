@@ -532,16 +532,15 @@ public class Auction {
 		char choice;
 		boolean ret;
 
-		if(args.length<2){
+		if(args.length < 2) {
 			System.out.println("Usage: java Auction postgres_id password");
 			System.exit(1);
 		}
 		
-		try{
-            //    	conn = DriverManager.getConnection("jdbc:postgresql://localhost/"+args[0], args[0], args[1]); 
+		try {
+            //conn = DriverManager.getConnection("jdbc:postgresql://localhost/"+args[0], args[0], args[1]); 
             Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost/s20311486", "s20311486", "urin1223%");
-		}
-		catch(SQLException e){
+		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
 			System.exit(1);
 		}
@@ -559,13 +558,13 @@ public class Auction {
 			try {
 				choice = scanner.next().charAt(0);;
 				scanner.nextLine();
-			} catch (java.util.InputMismatchException e) {
+			} catch(java.util.InputMismatchException e) {
 				System.out.println("Error: Invalid input is entered. Try again.");
 				continue;
 			}
 
 			try {
-				switch ((int) choice) {
+				switch((int)choice) {
 					case '1':
 						ret = LoginMenu();
 						if(!ret) continue;
