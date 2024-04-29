@@ -54,7 +54,8 @@ public class Auction {
 			PreparedStatement pstmt = conn.prepareStatement("select user_id,password from user_info where user_id = ? and password = ?");
 			pstmt.setString(1,username);
 			pstmt.setString(2,userpass);
-			if(pstmt.executeQuery().getRow() != 0) login_success = true;
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) login_success = true;
 			pstmt.close();
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
