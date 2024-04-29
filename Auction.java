@@ -78,17 +78,15 @@ public class Auction {
 		boolean flag_catg = true, flag_cond = true;
 
 		do{
-			System.out.println(
-					"----< Sell Item >\n" +
-					"---- Choose a category.\n" +
-					"    1. Electronics\n" +
-					"    2. Books\n" +
-					"    3. Home\n" +
-					"    4. Clothing\n" +
-					"    5. Sporting Goods\n" +
-					"    6. Other Categories\n" +
-					"    P. Go Back to Previous Menu"
-					);
+			System.out.print("----< Sell Item >\n");
+			System.out.print("---- Choose a category.\n");
+			System.out.print("    1. Electronics\n");
+			System.out.print("    2. Books\n");
+			System.out.print("    3. Home\n");
+			System.out.print("    4. Clothing\n");
+			System.out.print("    5. Sporting Goods\n");
+			System.out.print("    6. Other Categories\n");
+			System.out.println("    P. Go Back to Previous Menu");
 
 			try {
 				choice = scanner.next().charAt(0);;
@@ -554,7 +552,7 @@ public class Auction {
 		
 		try {
             //conn = DriverManager.getConnection("jdbc:postgresql://localhost/"+args[0], args[0], args[1]); 
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost/s20311486", "s20311486", "urin1223%");
+            Auction.conn = DriverManager.getConnection("jdbc:postgresql://localhost/s20311486", "s20311486", "urin1223%");
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
 			System.exit(1);
@@ -651,7 +649,7 @@ public class Auction {
 						conn.close();
 						System.exit(1);
 				}
-			} catch (SQLException e) {
+			} catch(SQLException e) {
 				System.out.println("SQLException : " + e);	
 				System.exit(1);
 			}
