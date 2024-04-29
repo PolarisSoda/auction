@@ -4,6 +4,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.text. *;
@@ -30,19 +31,15 @@ public class Auction {
 	}
 
 	private static boolean LoginMenu() {
-		String userpass, isAdmin;
+		String userpass;
+		System.out.print("----< User Login >\n");
+		System.out.print(" ** To go back, enter 'back' in user ID.\n");
+		System.out.print("     user ID: ");
 
-		System.out.print("----< User Login >\n" +
-				" ** To go back, enter 'back' in user ID.\n" +
-				"     user ID: ");
-		try{
+		try {
 			username = scanner.next();
 			scanner.nextLine();
-
-			if(username.equalsIgnoreCase("back")){
-				return false;
-			}
-
+			if(username.equalsIgnoreCase("back")) return false;
 			System.out.print("     password: ");
 			userpass = scanner.next();
 			scanner.nextLine();
@@ -52,14 +49,23 @@ public class Auction {
 			return false;
 		}
 
-		/* Your code should come here to check ID and password */ 
-
-		if (false) {  
-			/* If Login Fails */
+		boolean login_success = false; 
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("select user_id,password from user_info where user_id = ? and password = ?");
+			pstmt.setString(1,username);
+			pstmt.setString(2,userpass);
+			if(pstmt.executeQuery().getRow() != 0) login_success = true;
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
+		
+		if(login_success) {  
 			System.out.println("Error: Incorrect user name or password");
+			username = null;
 			return false; 
 		}
-
 		System.out.println("You are successfully logged in.\n");
 		return true;
 	}
@@ -195,17 +201,16 @@ public class Auction {
 	}
 
 	private static boolean SignupMenu() {
-		/* 2. Sign Up */
 		String new_username, userpass, isAdmin;
-		System.out.print("----< Sign Up >\n" + 
-				" ** To go back, enter 'back' in user ID.\n" +
-				"---- user name: ");
+		System.out.print("----< Sign Up >\n");
+		System.out.print(" ** To go back, enter 'back' in user ID.\n");
+		System.out.print("---- user name: ");
+
 		try {
 			new_username = scanner.next();
 			scanner.nextLine();
-			if(new_username.equalsIgnoreCase("back")){
-				return false;
-			}
+			if(new_username.equalsIgnoreCase("back")) return false;
+
 			System.out.print("---- password: ");
 			userpass = scanner.next();
 			scanner.nextLine();
@@ -218,7 +223,18 @@ public class Auction {
 		}
 
 		/* TODO: Your code should come here to create a user account in your database */
-
+		// Admin is available only at input is Y or y.
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("insert into user_info values(?, ?, ?)");
+			pstmt.setString(1,new_username);
+			pstmt.setString(2,userpass);
+			pstmt.setString(3,isAdmin.equalsIgnoreCase("Y") ? "Admin" : "User");
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
 		System.out.println("Your account has been successfully created.\n");
 		return true;
 	}
@@ -632,7 +648,7 @@ public class Auction {
 					case 'q':
 					case 'Q':
 						System.out.println("Good Bye");
-						/* TODO: close the connection and clean up everything here */
+						/* close the connection and clean up everything here */
 						conn.close();
 						System.exit(1);
 				}
