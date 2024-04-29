@@ -1,5 +1,5 @@
 /*
-we will satisfy 3nf
+we will satisfy 3NF
 
 user : user_ID,pwd,monee
 item : item_ID, category, description, condition, seller ID, buy-it-now-price, date posted, status(selled,selling,expired)

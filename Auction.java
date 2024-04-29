@@ -243,27 +243,39 @@ public class Auction {
 		char choice;
 		String adminname, adminpass;
 		String keyword, seller;
-		System.out.print("----< Login as Administrator >\n" +
-				" ** To go back, enter 'back' in user ID.\n" +
-				"---- admin ID: ");
+		System.out.print("----< Login as Administrator >\n");
+		System.out.print(" ** To go back, enter 'back' in user ID.\n");
+		System.out.print("---- admin ID: ");
 
 		try {
 			adminname = scanner.next();
 			scanner.nextLine();
-			if(adminname.equalsIgnoreCase("back")){
-				return false;
-			}
+			if(adminname.equalsIgnoreCase("back")) return false;
 			System.out.print("---- password: ");
 			adminpass = scanner.nextLine();
-			// TODO: check the admin's account and password.
-		} catch (java.util.InputMismatchException e) {
+		} catch(java.util.InputMismatchException e) {
 			System.out.println("Error: Invalid input is entered. Try again.");
 			return false;
 		}
 
-		boolean login_success = true;
-
-		if(!login_success) return false;
+		// TODO: check the admin's account and password.
+		boolean login_success = false; 
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("select user_id,password from user_info where user_id = ? and password = ? and role = 'Admin'");
+			pstmt.setString(1,adminname);
+			pstmt.setString(2,adminpass);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) login_success = true;
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
+		
+		if(!login_success) {  
+			System.out.println("Error: Incorrect user name or password");
+			return false; 
+		}
 
 		//REAL ADMIN MENU BELOW
 
