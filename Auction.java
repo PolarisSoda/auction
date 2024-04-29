@@ -61,7 +61,7 @@ public class Auction {
 			System.exit(1);
 		}
 		
-		if(login_success) {  
+		if(!login_success) {  
 			System.out.println("Error: Incorrect user name or password");
 			username = null;
 			return false; 
