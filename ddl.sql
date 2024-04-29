@@ -8,19 +8,20 @@ billing : sold item_ID, purchase date, seller_ID, buyer_ID, amount due buyers ne
 i think billing is optional......
 */
 CREATE TABLE user_info (
-    user_id varchar(64),
-    password varchar(64),
-    money int,
-    primary key(user_id)
+    user_id varchar(32),
+    password varchar(32),
+    role varchar(16),
+    primary key(user_id),
+    check(role in ('Admin','User'))
 );
 -- User is very simple. 
-
+/*
 CREATE TABLE item_info (
-    item_id varchar(64),
-    category varchar(64),
-    description varchar(64),
-    condition varchar(64),
-    seller_id varchar(64),
+    item_id varchar(32),
+    category varchar(32),
+    description varchar(32),
+    condition varchar(32),
+    seller_id varchar(32),
     status varchar(64),
     buy_now_price varchar(64),
     date_posted timestamp,
@@ -28,9 +29,12 @@ CREATE TABLE item_info (
 -- This might be decomposed....
 
 CREATE TABLE bid_info (
+    item_id varchar(64),
 
+    foreign key (item_id) references item_info on delete cascade on update cascade 
 );
 
 CREATE TABLE billing_info (
 
 );
+*/

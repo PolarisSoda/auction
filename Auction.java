@@ -43,7 +43,7 @@ public class Auction {
 			System.out.print("     password: ");
 			userpass = scanner.next();
 			scanner.nextLine();
-		}catch (java.util.InputMismatchException e) {
+		} catch(java.util.InputMismatchException e) {
 			System.out.println("Error: Invalid input is entered. Try again.");
 			username = null;
 			return false;
@@ -217,7 +217,7 @@ public class Auction {
 			System.out.print("---- In this user an administrator? (Y/N): ");
 			isAdmin = scanner.next();
 			scanner.nextLine();
-		} catch (java.util.InputMismatchException e) {
+		} catch(java.util.InputMismatchException e) {
 			System.out.println("Error: Invalid input is entered. Please select again.");
 			return false;
 		}
@@ -264,10 +264,9 @@ public class Auction {
 
 		boolean login_success = true;
 
-		if(!login_success){
-			// login failed. go back to the previous menu.
-			return false;
-		}
+		if(!login_success) return false;
+
+		//REAL ADMIN MENU BELOW
 
 		do {
 			System.out.println(
@@ -555,7 +554,7 @@ public class Auction {
 		
 		try {
             //conn = DriverManager.getConnection("jdbc:postgresql://localhost/"+args[0], args[0], args[1]); 
-            Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost/s20311486", "s20311486", "urin1223%");
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost/s20311486", "s20311486", "urin1223%");
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
 			System.exit(1);
