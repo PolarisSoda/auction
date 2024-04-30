@@ -74,11 +74,14 @@ public class Auction {
 	private static boolean SellMenu() {
 		Category category;
 		Condition condition;
-		char choice;
+		String description;
 		int price;
+		LocalDateTime dateTime;
+
+		char choice;
 		boolean flag_catg = true, flag_cond = true;
 
-		do{
+		do {
 			System.out.print("----< Sell Item >\n");
 			System.out.print("---- Choose a category.\n");
 			System.out.print("    1. Electronics\n");
@@ -91,13 +94,12 @@ public class Auction {
 
 			try {
 				choice = scanner.next().charAt(0);;
-			}catch (java.util.InputMismatchException e) {
+			} catch(java.util.InputMismatchException e) {
 				System.out.println("Error: Invalid input is entered. Try again.");
 				continue;
 			}
 
 			flag_catg = true;
-
 			switch ((int) choice){
 				case '1':
 					category = Category.ELECTRONICS;
@@ -125,28 +127,25 @@ public class Auction {
 					flag_catg = false;
 					continue;
 			}
-		}while(!flag_catg);
+		} while(!flag_catg);
 
-		do{
-			System.out.println(
-					"---- Select the condition of the item to sell.\n" +
-					"   1. New\n" +
-					"   2. Like-new\n" +
-					"   3. Used (Good)\n" +
-					"   4. Used (Acceptable)\n" +
-					"   P. Go Back to Previous Menu"
-					);
+		do {
+			System.out.print("---- Select the condition of the item to sell.\n");
+			System.out.print("   1. New\n");
+			System.out.print("   2. Like-new\n");
+			System.out.print("   3. Used (Good)\n");
+			System.out.print("   4. Used (Acceptable)\n");
+			System.out.println("   P. Go Back to Previous Menu");
 
 			try {
 				choice = scanner.next().charAt(0);;
 				scanner.nextLine();
-			}catch (java.util.InputMismatchException e) {
+			} catch(java.util.InputMismatchException e) {
 				System.out.println("Error: Invalid input is entered. Try again.");
 				continue;
 			}
 
 			flag_cond = true;
-
 			switch (choice) {
 				case '1':
 					condition = Condition.NEW;
@@ -168,11 +167,11 @@ public class Auction {
 					flag_cond = false;
 					continue;
 			}
-		}while(!flag_cond);
+		} while(!flag_cond);
 
 		try {
 			System.out.println("---- Description of the item (one line): ");
-			String description = scanner.nextLine();
+			description = scanner.nextLine();
 			System.out.println("---- Buy-It-Now price: ");
 
 			while (!scanner.hasNextInt()) {
@@ -187,14 +186,17 @@ public class Auction {
 			// you may assume users always enter valid date/time
 			String date = scanner.nextLine();  /* "2023-03-04 11:30"; */
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-			LocalDateTime dateTime = LocalDateTime.parse(date, formatter);
-		}catch (Exception e) {
+			dateTime = LocalDateTime.parse(date, formatter);
+		} catch (Exception e) {
 			System.out.println("Error: Invalid input is entered. Going back to the previous menu.");
 			return false;
 		}
 
 		/* TODO: Your code should come here to store the user inputs in your database */
-
+		System.out.println(description);
+		System.out.println(price);
+		System.out.println(dateTime);
+		//System.out.println(category, condition, description, price, dateTime);
 		System.out.println("Your item has been successfully listed.\n");
 		return true;
 	}
@@ -239,7 +241,6 @@ public class Auction {
 	}
 
 	private static boolean AdminMenu() {
-		/* 3. Login as Administrator */
 		char choice;
 		String adminname, adminpass;
 		String keyword, seller;
@@ -258,7 +259,6 @@ public class Auction {
 			return false;
 		}
 
-		// TODO: check the admin's account and password.
 		boolean login_success = false; 
 		try {
 			PreparedStatement pstmt = conn.prepareStatement("select user_id,password from user_info where user_id = ? and password = ? and role = 'Admin'");
@@ -271,7 +271,6 @@ public class Auction {
 			System.out.println("SQLException : " + e);	
 			System.exit(1);
 		}
-		
 		if(!login_success) {  
 			System.out.println("Error: Incorrect user name or password");
 			return false; 
@@ -614,7 +613,7 @@ public class Auction {
 			} catch (SQLException e) {
 				System.out.println("SQLException : " + e);	
 			}
-		} while (username==null || username.equalsIgnoreCase("back"));  
+		} while(username==null || username.equalsIgnoreCase("back"));  
 
 		// logged in as a normal user 
 		do {
@@ -631,13 +630,13 @@ public class Auction {
 			try {
 				choice = scanner.next().charAt(0);;
 				scanner.nextLine();
-			} catch (java.util.InputMismatchException e) {
+			} catch(java.util.InputMismatchException e) {
 				System.out.println("Error: Invalid input is entered. Try again.");
 				continue;
 			}
 
-			try{
-				switch (choice) {
+			try {
+				switch(choice) {
 					case '1':
 						ret = SellMenu();
 						if(!ret) continue;
