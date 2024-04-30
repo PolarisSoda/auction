@@ -72,8 +72,8 @@ public class Auction {
 	}
 
 	private static boolean SellMenu() {
-		Category category;
-		Condition condition;
+		Category category = Category.OTHERS;
+		Condition condition = Condition.NEW;
 		String description;
 		int price;
 		LocalDateTime dateTime;
