@@ -193,6 +193,8 @@ public class Auction {
 		}
 
 		/* TODO: Your code should come here to store the user inputs in your database */
+		System.out.println(category.name());
+		System.out.println(condition.name());
 		System.out.println(description);
 		System.out.println(price);
 		System.out.println(dateTime);
