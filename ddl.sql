@@ -1,40 +1,51 @@
 /*
 we will satisfy 3NF
 
-user : user_ID,pwd,monee
-item : item_ID, category, description, condition, seller ID, buy-it-now-price, date posted, status(selled,selling,expired)
-bid  : item_ID, bid_price, bidder, date_posted, bid_closing_date
-billing : sold item_ID, purchase date, seller_ID, buyer_ID, amount due buyers need to pay, amount of money sellers need to get paid.
-i think billing is optional......
+//기본적으로 날짜는 겹칠 수 있다고 생각한다.
+
+user_info : user_id,password,role
+//user_id는 모든것을 결정함.
+
+item_info : item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire
+//item_id 역시 모든 것을 결정함.
+
+bidding_info : bid_id,item_id,buyer_id,bidding_time,price
+
+billing_info : item_id,seller_id,buyer_id,deal_date,price
 */
+
 CREATE TABLE user_info (
     user_id varchar(32),
     password varchar(32),
-    role varchar(16),
+    role varchar(32),
     primary key(user_id),
     check(role in ('Admin','User'))
 );
--- User is very simple. 
-/*
+
 CREATE TABLE item_info (
     item_id varchar(32),
-    category varchar(32),
-    description varchar(32),
-    condition varchar(32),
     seller_id varchar(32),
-    status varchar(64),
-    buy_now_price varchar(64),
+    category varchar(32),
+    condition varchar(32),
+    description varchar(32),
+    bin_price int,
     date_posted timestamp,
+    date_expire timestamp,
+    primary key(item_id),
+    foreign key(seller_id) references user_info(user_id) on update cascade
 );
--- This might be decomposed....
 
 CREATE TABLE bid_info (
-    item_id varchar(64),
-
-    foreign key (item_id) references item_info on delete cascade on update cascade 
+    bid_id varchar(32),
+    item_id varchar(32),
+    buyer_id varchar(32),
+    bid_posted timestamp,
+    price int,
+    primary key(bid_id),
+    foreign key(item_id) references item_info(item_id) on update cascade on delete cascade,
+    foreign key(buyer_id) references user_info(user_id) on update cascade on delete cascade
 );
 
 CREATE TABLE billing_info (
-
+    bid_id varchar(32)
 );
-*/

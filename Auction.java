@@ -1,6 +1,8 @@
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.DriverManager;
@@ -76,7 +78,7 @@ public class Auction {
 		Condition condition = Condition.NEW;
 		String description;
 		int price;
-		LocalDateTime dateTime;
+		LocalDateTime dateTime, postTime;
 
 		char choice;
 		boolean flag_catg = true, flag_cond = true;
@@ -191,14 +193,26 @@ public class Auction {
 			System.out.println("Error: Invalid input is entered. Going back to the previous menu.");
 			return false;
 		}
-
+		postTime = LocalDateTime.now();
+		
 		/* TODO: Your code should come here to store the user inputs in your database */
 		System.out.println(category.name());
 		System.out.println(condition.name());
 		System.out.println(description);
 		System.out.println(price);
 		System.out.println(dateTime);
-		//System.out.println(category, condition, description, price, dateTime);
+		//category,condition,description,price,dateTime,postTime,*item_id*(how do i get?)
+		//seller will automatically determined because we logged in certain account.
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("insert into item_info values(?,?,?,?,?,?,?,?)");
+
+			pstmt.executeQuery();
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
+		
 		System.out.println("Your item has been successfully listed.\n");
 		return true;
 	}
@@ -572,6 +586,10 @@ public class Auction {
 			System.exit(1);
 		}
 		
+		LocalDateTime now = LocalDateTime.now();
+		Timestamp timestamp = Timestamp.valueOf(now);
+		System.out.println(timestamp);
+
 		do {
 			username = null;
 			System.out.println(
