@@ -585,16 +585,6 @@ public class Auction {
 			System.out.println("SQLException : " + e);	
 			System.exit(1);
 		}
-		
-		LocalDateTime now = LocalDateTime.now();
-		Timestamp timestamp = Timestamp.valueOf(now);
-		System.out.println(timestamp);
-		now = LocalDateTime.now();
-		timestamp = Timestamp.valueOf(now);
-		System.out.println(timestamp);
-		now = LocalDateTime.now();
-		timestamp = Timestamp.valueOf(now);
-		System.out.println(timestamp);
 
 		do {
 			username = null;

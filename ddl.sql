@@ -4,14 +4,19 @@ we will satisfy 3NF
 //기본적으로 날짜는 겹칠 수 있다고 생각한다.
 
 user_info : user_id,password,role
-//user_id는 모든것을 결정함.
+//user_id -> password,role
 
 item_info : item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire
-//item_id 역시 모든 것을 결정함.
+//item_id -> seller_id,category,condition,description,bin_price,date_posted,date_expire
+//seller_id,date_posted -> item_id,category,condition,description,bin_price,date_expire
+
 
 bidding_info : bid_id,item_id,buyer_id,bidding_time,price
+//bid_id -> item_id,buyer_id,bidding_time,price
+//buyer_id,bidding_time -> bid_id,item_id,price
 
-billing_info : item_id,seller_id,buyer_id,deal_date,price
+billing_info : bid_id,dealed_date(BIN의 경우 bidding 만료일자와 다름)
+
 */
 
 CREATE TABLE user_info (
