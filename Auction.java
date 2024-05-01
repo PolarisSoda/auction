@@ -589,6 +589,12 @@ public class Auction {
 		LocalDateTime now = LocalDateTime.now();
 		Timestamp timestamp = Timestamp.valueOf(now);
 		System.out.println(timestamp);
+		now = LocalDateTime.now();
+		timestamp = Timestamp.valueOf(now);
+		System.out.println(timestamp);
+		now = LocalDateTime.now();
+		timestamp = Timestamp.valueOf(now);
+		System.out.println(timestamp);
 
 		do {
 			username = null;
