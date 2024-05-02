@@ -74,7 +74,7 @@ public class Auction {
 	}
 
 	private static boolean SellMenu() {
-		Category category = Category.OTHERS;
+		Category category = Category.ELECTRONICS;
 		Condition condition = Condition.NEW;
 		String description;
 		int price;
@@ -193,16 +193,15 @@ public class Auction {
 			System.out.println("Error: Invalid input is entered. Going back to the previous menu.");
 			return false;
 		}
-		postTime = LocalDateTime.now();
-		
-		/* TODO: Your code should come here to store the user inputs in your database */
+		postTime = LocalDateTime.now().withNano(0);
+
 		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire
 		try {
 			PreparedStatement pstmt = conn.prepareStatement("insert into item_info values(?,?,?,?,?,?,?,?)");
 			pstmt.setString(1,"something");
 			pstmt.setString(2,Auction.username);
-			pstmt.setString(3,category.name());
-			pstmt.setString(4,condition.name());
+			pstmt.setString(3,category.toString());
+			pstmt.setString(4,condition.toString());
 			pstmt.setString(5,description);
 			pstmt.setInt(6,price);
 			pstmt.setTimestamp(7,Timestamp.valueOf(postTime));
