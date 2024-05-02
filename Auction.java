@@ -196,17 +196,18 @@ public class Auction {
 		postTime = LocalDateTime.now();
 		
 		/* TODO: Your code should come here to store the user inputs in your database */
-		System.out.println(category.name());
-		System.out.println(condition.name());
-		System.out.println(description);
-		System.out.println(price);
-		System.out.println(dateTime);
-		//category,condition,description,price,dateTime,postTime,*item_id*(how do i get?)
-		//seller will automatically determined because we logged in certain account.
+		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire
 		try {
 			PreparedStatement pstmt = conn.prepareStatement("insert into item_info values(?,?,?,?,?,?,?,?)");
-
-			pstmt.executeQuery();
+			pstmt.setString(1,"something");
+			pstmt.setString(2,Auction.username);
+			pstmt.setString(3,category.name());
+			pstmt.setString(4,condition.name());
+			pstmt.setString(5,description);
+			pstmt.setInt(6,price);
+			pstmt.setTimestamp(7,Timestamp.valueOf(postTime));
+			pstmt.setTimestamp(8,Timestamp.valueOf(dateTime));
+			pstmt.executeUpdate();
 			pstmt.close();
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
