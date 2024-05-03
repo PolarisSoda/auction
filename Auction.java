@@ -42,7 +42,6 @@ public class Auction {
 				char c = (char)('a' + temp);
 				ret += c;
 			}
-			System.out.println(ret);
 			try {
 				ResultSet rset;
 				PreparedStatement pstmt;
@@ -50,7 +49,7 @@ public class Auction {
 				else pstmt = conn.prepareStatement("select * from bid_info where bid_id = ?");
 				rset = pstmt.executeQuery();
 				pstmt.close();
-				if(!rset.next()) return ret;
+				if(!rset.next()) {System.out.println(ret); return ret;}
 			} catch(SQLException e) {
 				System.out.println("SQLException : " + e);	
 				System.exit(1);
