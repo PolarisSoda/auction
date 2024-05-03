@@ -410,8 +410,8 @@ public class Auction {
 	}
 
 	public static boolean BuyItem(){
-		Category category;
-		Condition condition;
+		Category category = Category.ELECTRONICS;
+		Condition condition = Condition.NEW;
 		char choice;
 		int price;
 		String keyword, seller, datePosted;
@@ -553,9 +553,6 @@ public class Auction {
 		/* TODO: List all items that match the query condition */
 		System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
 		System.out.println("-------------------------------------------------------------------------------------------------------");
-		while(rset.next()) {
-
-		}
 
 		System.out.println("---- Select Item ID to buy or bid: ");
 		String selected_item;
