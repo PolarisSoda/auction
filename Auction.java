@@ -42,7 +42,7 @@ public class Auction {
 				char c = (char)('a' + temp);
 				ret += c;
 			}
-
+			System.out.println(ret);
 			try {
 				ResultSet rset;
 				PreparedStatement pstmt;
