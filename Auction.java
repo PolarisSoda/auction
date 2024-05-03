@@ -14,6 +14,7 @@ import java.util. *;
 
 public class Auction {
 	private static Scanner scanner = new Scanner(System.in);
+	private static Random rand = new Random();
 	private static String username;
 	private static Connection conn;
 
@@ -30,6 +31,31 @@ public class Auction {
 		LIKE_NEW,
 		GOOD,
 		ACCEPTABLE
+	}
+
+	private static String GetNewID(char identifier) {
+		String ret;
+		while(true) {
+			ret = String.valueOf(identifier);
+			for(int i=0; i<20; i++) {
+				int temp = rand.nextInt(26);
+				char c = (char)('a' + temp);
+				ret += c;
+			}
+
+			try {
+				ResultSet rset;
+				PreparedStatement pstmt;
+				if(identifier == 'I') pstmt = conn.prepareStatement("select * from item_info where item_id = ?");
+				else pstmt = conn.prepareStatement("select * from bid_info where bid_id = ?");
+				rset = pstmt.executeQuery();
+				pstmt.close();
+				if(!rset.next()) return ret;
+			} catch(SQLException e) {
+				System.out.println("SQLException : " + e);	
+				System.exit(1);
+			}
+		}
 	}
 
 	private static boolean LoginMenu() {
@@ -197,8 +223,9 @@ public class Auction {
 
 		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire
 		try {
+			String new_id = GetNewID('I');
 			PreparedStatement pstmt = conn.prepareStatement("insert into item_info values(?,?,?,?,?,?,?,?)");
-			pstmt.setString(1,"something");
+			pstmt.setString(1,new_id);
 			pstmt.setString(2,Auction.username);
 			pstmt.setString(3,category.toString());
 			pstmt.setString(4,condition.toString());
@@ -365,14 +392,21 @@ public class Auction {
 
 	public static void CheckSellStatus(){
 		/* TODO: Check the status of the item the current user is selling */
+		ResultSet rset;
+
+		try {
+			String Q = "select * from item_info ";
+			PreparedStatement pstmt = conn.prepareStatement(Q);
+			rset = pstmt.executeQuery();
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
+		
 
 		System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
 		System.out.println("-------------------------------------------------------------------------------\n");
-		/*
-		   while(rset.next(){
-		   System.out.println();
-		   }
-		 */
 	}
 
 	public static boolean BuyItem(){
@@ -381,20 +415,20 @@ public class Auction {
 		char choice;
 		int price;
 		String keyword, seller, datePosted;
+		ResultSet rset;
+
 		boolean flag_catg = true, flag_cond = true;
 		
 		do {
-
-			System.out.println( "----< Select category > : \n" +
-					"    1. Electronics\n"+
-					"    2. Books\n" + 
-					"    3. Home\n" + 
-					"    4. Clothing\n" + 
-					"    5. Sporting Goods\n" +
-					"    6. Other categories\n" +
-					"    7. Any category\n" +
-					"    P. Go Back to Previous Menu"
-					);
+			System.out.print("----< Select category > : \n");
+			System.out.print("    1. Electronics\n");
+			System.out.print("    2. Books\n");
+			System.out.print("    3. Home\n");
+			System.out.print("    4. Clothing\n");
+			System.out.print("    5. Sporting Goods\n");
+			System.out.print("    6. Other categories\n");
+			System.out.print("    7. Any category\n");
+			System.out.println("    P. Go Back to Previous Menu");
 
 			try {
 				choice = scanner.next().charAt(0);;
@@ -405,7 +439,6 @@ public class Auction {
 			}
 
 			flag_catg = true;
-
 			switch (choice) {
 				case '1':
 					category = Category.ELECTRONICS;
@@ -438,15 +471,13 @@ public class Auction {
 		} while(!flag_catg);
 
 		do {
+			System.out.print("----< Select the condition > \n");
+			System.out.print("   1. New\n");
+			System.out.print("   2. Like-new\n");
+			System.out.print("   3. Used (Good)\n");
+			System.out.print("   4. Used (Acceptable)\n");
+			System.out.println("   P. Go Back to Previous Menu");
 
-			System.out.println(
-					"----< Select the condition > \n" +
-					"   1. New\n" +
-					"   2. Like-new\n" +
-					"   3. Used (Good)\n" +
-					"   4. Used (Acceptable)\n" +
-					"   P. Go Back to Previous Menu"
-					);
 			try {
 				choice = scanner.next().charAt(0);;
 				scanner.nextLine();
@@ -456,7 +487,6 @@ public class Auction {
 			}
 
 			flag_cond = true;
-
 			switch (choice) {
 				case '1':
 					condition = Condition.NEW;
@@ -498,6 +528,8 @@ public class Auction {
 			System.out.println("Error: Invalid input is entered. Try again.");
 			return false;
 		}
+		if(seller.equals("any")) seller = "%";
+		seller = "%" + seller + "%";
 
 		/* TODO: Query condition: item category */
 		/* TODO: Query condition: item condition */
@@ -505,18 +537,30 @@ public class Auction {
 		/* TODO: Query condition: items from a particular seller */
 		/* TODO: Query condition: posted date of item */
 
+		try {
+			String Q = "select * from item_info where category = ? and condition = ? and description like ? and date_posted > ?";
+			PreparedStatement pstmt = conn.prepareStatement(Q);
+			pstmt.setString(1,category.toString());
+			pstmt.setString(2,condition.toString());
+			pstmt.setString(3,seller);
+			pstmt.setTimestamp(4,Timestamp.valueOf(datePosted));
+			rset = pstmt.executeQuery();
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
 		/* TODO: List all items that match the query condition */
 		System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
 		System.out.println("-------------------------------------------------------------------------------------------------------");
-		/* 
-		   while(rset.next()){ 
-		   }
-		 */
+		while(rset.next()) {
+
+		}
 
 		System.out.println("---- Select Item ID to buy or bid: ");
-
+		String selected_item;
 		try {
-			choice = scanner.next().charAt(0);;
+			selected_item = scanner.next();
 			scanner.nextLine();
 			System.out.println("     Price: ");
 			price = scanner.nextInt();
