@@ -49,8 +49,8 @@ public class Auction {
 				else pstmt = conn.prepareStatement("select * from bid_info where bid_id = ?");
 				pstmt.setString(1,ret);
 				rset = pstmt.executeQuery();
+				if(!rset.next()) {pstmt.close(); return ret;}
 				pstmt.close();
-				if(!rset.next()) return ret;
 			} catch(SQLException e) {
 				System.out.println("SQLException : " + e);	
 				System.exit(1);
