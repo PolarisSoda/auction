@@ -47,6 +47,7 @@ public class Auction {
 				PreparedStatement pstmt;
 				if(identifier == 'I') pstmt = conn.prepareStatement("select * from item_info where item_id = ?");
 				else pstmt = conn.prepareStatement("select * from bid_info where bid_id = ?");
+				System.out.println("HELLO");
 				pstmt.setString(1,ret);
 				rset = pstmt.executeQuery();
 				if(!rset.next()) {pstmt.close(); return ret;}
