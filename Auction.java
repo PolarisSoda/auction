@@ -529,8 +529,9 @@ public class Auction {
 			System.out.println("---- Enter date posted (YYYY-MM-DD): ");
 			System.out.println(" ** This will search items that have been posted after the designated date.");
 			String date = scanner.next();
+			date += " 00:00";
 			scanner.nextLine();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			datePosted = LocalDateTime.parse(date, formatter);
 		} catch (java.util.InputMismatchException e) {
 			System.out.println("Error: Invalid input is entered. Try again.");
