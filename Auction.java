@@ -412,9 +412,11 @@ public class Auction {
 	public static boolean BuyItem(){
 		Category category = Category.ELECTRONICS;
 		Condition condition = Condition.NEW;
+
 		char choice;
 		int price;
-		String keyword, seller, datePosted;
+		String keyword, seller, s_category = "%", s_condition = "%";
+		LocalDateTime datePosted;
 		ResultSet rset;
 
 		boolean flag_catg = true, flag_cond = true;
@@ -467,6 +469,8 @@ public class Auction {
 					flag_catg = false;
 					continue;
 			}
+			if(choice != '7') s_category = category.toString();
+			else s_category = "%";
 		} while(!flag_catg);
 
 		do {
@@ -478,7 +482,7 @@ public class Auction {
 			System.out.println("   P. Go Back to Previous Menu");
 
 			try {
-				choice = scanner.next().charAt(0);;
+				choice = scanner.next().charAt(0);
 				scanner.nextLine();
 			} catch (java.util.InputMismatchException e) {
 				System.out.println("Error: Invalid input is entered. Try again.");
@@ -506,7 +510,8 @@ public class Auction {
 					System.out.println("Error: Invalid input is entered. Try again.");
 					flag_cond = false;
 					continue;
-				}
+			}
+			s_condition = condition.toString();
 		} while(!flag_cond);
 
 		try {
@@ -517,18 +522,20 @@ public class Auction {
 			System.out.println("---- Enter Seller ID to search : ");
 			System.out.println(" ** Enter 'any' if you want to see items from any seller. ");
 			seller = scanner.next();
+			if(seller.equals("any")) seller = "%";
+			seller = "%" + seller + "%";
 			scanner.nextLine();
 
 			System.out.println("---- Enter date posted (YYYY-MM-DD): ");
 			System.out.println(" ** This will search items that have been posted after the designated date.");
-			datePosted = scanner.next();
+			String date = scanner.next();
 			scanner.nextLine();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			datePosted = LocalDateTime.parse(date, formatter);
 		} catch (java.util.InputMismatchException e) {
 			System.out.println("Error: Invalid input is entered. Try again.");
 			return false;
 		}
-		if(seller.equals("any")) seller = "%";
-		seller = "%" + seller + "%";
 
 		//category,conditon,description,seller_id,date_posted
 		/* TODO: Query condition: item category */
@@ -538,10 +545,11 @@ public class Auction {
 		/* TODO: Query condition: posted date of item */
 
 		try {
-			String Q = "select * from item_info where category = ? and condition = ? and description like ? and date_posted > ?";
+			String Q = "select * from item_info where category like ? and condition = ? and description like ? and seller_id = ? and date_posted > ?";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
-			pstmt.setString(1,category.toString());
-			pstmt.setString(2,condition.toString());
+			pstmt.setString(1,s_category);
+			pstmt.setString(2,s_condition);
+			pstmt.setString(3,keyword);
 			pstmt.setString(3,seller);
 			pstmt.setTimestamp(4,Timestamp.valueOf(datePosted));
 
