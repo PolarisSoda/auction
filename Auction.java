@@ -37,7 +37,7 @@ public class Auction {
 		String ret;
 		while(true) {
 			ret = String.valueOf(identifier);
-			for(int i=0; i<20; i++) {
+			for(int i=0; i<9; i++) {
 				int temp = rand.nextInt(26);
 				char c = (char)('a' + temp);
 				ret += c;
@@ -47,6 +47,7 @@ public class Auction {
 				PreparedStatement pstmt;
 				if(identifier == 'I') pstmt = conn.prepareStatement("select * from item_info where item_id = ?");
 				else pstmt = conn.prepareStatement("select * from bid_info where bid_id = ?");
+				
 				pstmt.setString(1,ret);
 				rset = pstmt.executeQuery();
 				if(!rset.next()) {pstmt.close(); return ret;}
@@ -266,7 +267,6 @@ public class Auction {
 			return false;
 		}
 
-		/* TODO: Your code should come here to create a user account in your database */
 		// Admin is available only at input is Y or y.
 		try {
 			PreparedStatement pstmt = conn.prepareStatement("insert into user_info values(?, ?, ?)");
@@ -418,7 +418,6 @@ public class Auction {
 		ResultSet rset;
 
 		boolean flag_catg = true, flag_cond = true;
-		
 		do {
 			System.out.print("----< Select category > : \n");
 			System.out.print("    1. Electronics\n");
@@ -531,6 +530,7 @@ public class Auction {
 		if(seller.equals("any")) seller = "%";
 		seller = "%" + seller + "%";
 
+		//category,conditon,description,seller_id,date_posted
 		/* TODO: Query condition: item category */
 		/* TODO: Query condition: item condition */
 		/* TODO: Query condition: items whose description match the keyword (use LIKE operator) */
@@ -544,15 +544,20 @@ public class Auction {
 			pstmt.setString(2,condition.toString());
 			pstmt.setString(3,seller);
 			pstmt.setTimestamp(4,Timestamp.valueOf(datePosted));
+
 			rset = pstmt.executeQuery();
+			System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
+			System.out.println("-------------------------------------------------------------------------------------------------------");
+			while(rset.next()) {
+				System.out.println(rset);
+			}
+
+
 			pstmt.close();
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
 			System.exit(1);
 		}
-		/* TODO: List all items that match the query condition */
-		System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
-		System.out.println("-------------------------------------------------------------------------------------------------------");
 
 		System.out.println("---- Select Item ID to buy or bid: ");
 		String selected_item;
