@@ -538,8 +538,9 @@ public class Auction {
 		}
 
 		//category,conditon,description,seller_id,date_posted
+		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire,bid_id,buyer_id,bid_posted,price
 		try {
-			String Q = "select * from item_info where category like ? and condition = ? and description like ? and seller_id = ? and date_posted >= ?";
+			String IQ = "select * from item_info natural left outer join bid_info where category like ? and condition = ? and description like ? and seller_id = ? and date_posted >= ?";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,s_category);
 			pstmt.setString(2,s_condition);
@@ -551,11 +552,9 @@ public class Auction {
 			System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
 			System.out.println("-------------------------------------------------------------------------------------------------------");
 			while(rset.next()) {
-				for(int i=1; i<=9; i++) System.out.print(rset.getString(i));
-				System.out.println();
+				System.out.printf("%s\t| ",rset.getString(1));
+				System.out.printf("%s\t| ",rset.getString(5));
 			}
-
-
 			pstmt.close();
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
@@ -575,6 +574,14 @@ public class Auction {
 			return false;
 		}
 
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("sql");
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
 		/* TODO: Buy-it-now or bid: If the entered price is higher or equal to Buy-It-Now price, the bid ends. */
 		/* Even if the bid price is higher than the Buy-It-Now price, the buyer pays the B-I-N price. */
 
