@@ -540,7 +540,7 @@ public class Auction {
 		//category,conditon,description,seller_id,date_posted
 		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire,bid_id,buyer_id,bid_posted,price
 		try {
-			String IQ = "select * from item_info natural left outer join bid_info where category like ? and condition = ? and description like ? and seller_id = ? and date_posted >= ?";
+			String Q = "select * from item_info natural left outer join bid_info where category like ? and condition = ? and description like ? and seller_id = ? and date_posted >= ?";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,s_category);
 			pstmt.setString(2,s_condition);
