@@ -517,19 +517,18 @@ public class Auction {
 		try {
 			System.out.println("---- Enter keyword to search the description : ");
 			keyword = scanner.next();
+			keyword = "%" + keyword + "%";
 			scanner.nextLine();
 
 			System.out.println("---- Enter Seller ID to search : ");
 			System.out.println(" ** Enter 'any' if you want to see items from any seller. ");
 			seller = scanner.next();
 			if(seller.equals("any")) seller = "%";
-			seller = "%" + seller + "%";
 			scanner.nextLine();
 
 			System.out.println("---- Enter date posted (YYYY-MM-DD): ");
 			System.out.println(" ** This will search items that have been posted after the designated date.");
-			String date = scanner.next();
-			date += " 00:00";
+			String date = scanner.next() + " 00:00";
 			scanner.nextLine();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			datePosted = LocalDateTime.parse(date, formatter);
@@ -546,7 +545,7 @@ public class Auction {
 		/* TODO: Query condition: posted date of item */
 
 		try {
-			String Q = "select * from item_info where category like ? and condition = ? and description like ? and seller_id = ? and date_posted > ?";
+			String Q = "select * from item_info where category like ? and condition = ? and description like ? and seller_id = ? and date_posted >= ?";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,s_category);
 			pstmt.setString(2,s_condition);
@@ -558,6 +557,7 @@ public class Auction {
 			System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
 			System.out.println("-------------------------------------------------------------------------------------------------------");
 			while(rset.next()) {
+				System.out.println("WHY");
 				System.out.println(rset);
 			}
 
