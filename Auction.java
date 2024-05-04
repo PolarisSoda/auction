@@ -551,8 +551,8 @@ public class Auction {
 			pstmt.setString(1,s_category);
 			pstmt.setString(2,s_condition);
 			pstmt.setString(3,keyword);
-			pstmt.setString(3,seller);
-			pstmt.setTimestamp(4,Timestamp.valueOf(datePosted));
+			pstmt.setString(4,seller);
+			pstmt.setTimestamp(5,Timestamp.valueOf(datePosted));
 
 			rset = pstmt.executeQuery();
 			System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
