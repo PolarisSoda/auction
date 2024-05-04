@@ -524,6 +524,7 @@ public class Auction {
 			System.out.println(" ** Enter 'any' if you want to see items from any seller. ");
 			seller = scanner.next();
 			if(seller.equals("any")) seller = "%";
+			System.out.println(seller);
 			scanner.nextLine();
 
 			System.out.println("---- Enter date posted (YYYY-MM-DD): ");
@@ -554,6 +555,9 @@ public class Auction {
 			while(rset.next()) {
 				System.out.printf("%s\t| ",rset.getString(1));
 				System.out.printf("%s\t| ",rset.getString(5));
+				System.out.printf("%s\t| ",rset.getString(3));
+				System.out.printf("%s\t| ",rset.getString(2));
+				System.out.printf("%s\t|\n",rset.getString(6));
 			}
 			pstmt.close();
 		} catch(SQLException e) {
