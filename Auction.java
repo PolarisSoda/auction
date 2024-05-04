@@ -529,21 +529,15 @@ public class Auction {
 			System.out.println("---- Enter date posted (YYYY-MM-DD): ");
 			System.out.println(" ** This will search items that have been posted after the designated date.");
 			String date = scanner.next() + " 00:00";
-			scanner.nextLine();
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			datePosted = LocalDateTime.parse(date, formatter);
+			scanner.nextLine();
 		} catch (java.util.InputMismatchException e) {
 			System.out.println("Error: Invalid input is entered. Try again.");
 			return false;
 		}
 
 		//category,conditon,description,seller_id,date_posted
-		/* TODO: Query condition: item category */
-		/* TODO: Query condition: item condition */
-		/* TODO: Query condition: items whose description match the keyword (use LIKE operator) */
-		/* TODO: Query condition: items from a particular seller */
-		/* TODO: Query condition: posted date of item */
-
 		try {
 			String Q = "select * from item_info where category like ? and condition = ? and description like ? and seller_id = ? and date_posted >= ?";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
@@ -557,8 +551,8 @@ public class Auction {
 			System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
 			System.out.println("-------------------------------------------------------------------------------------------------------");
 			while(rset.next()) {
-				System.out.println("WHY");
-				System.out.println(rset);
+				for(int i=1; i<=9; i++) System.out.print(rset.getString(i));
+				System.out.println();
 			}
 
 
