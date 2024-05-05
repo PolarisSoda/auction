@@ -101,8 +101,8 @@ public class Auction {
 	}
 
 	private static boolean SellMenu() {
-		Category category = Category.ELECTRONICS;
-		Condition condition = Condition.NEW;
+		Category category = Category.ELECTRONICS; //초기값
+		Condition condition = Condition.NEW; //초기값
 		String description;
 		int price;
 		LocalDateTime dateTime, postTime;
@@ -129,7 +129,7 @@ public class Auction {
 			}
 
 			flag_catg = true;
-			switch ((int) choice){
+			switch(choice) {
 				case '1':
 					category = Category.ELECTRONICS;
 					continue;
@@ -167,7 +167,7 @@ public class Auction {
 			System.out.println("   P. Go Back to Previous Menu");
 
 			try {
-				choice = scanner.next().charAt(0);;
+				choice = scanner.next().charAt(0);
 				scanner.nextLine();
 			} catch(java.util.InputMismatchException e) {
 				System.out.println("Error: Invalid input is entered. Try again.");
@@ -175,7 +175,7 @@ public class Auction {
 			}
 
 			flag_cond = true;
-			switch (choice) {
+			switch(choice) {
 				case '1':
 					condition = Condition.NEW;
 					break;
@@ -412,14 +412,13 @@ public class Auction {
 	public static boolean BuyItem(){
 		Category category = Category.ELECTRONICS;
 		Condition condition = Condition.NEW;
-
-		char choice;
 		int price;
 		String keyword, seller, s_category = "%", s_condition = "%";
 		LocalDateTime datePosted;
-		ResultSet rset;
 
+		char choice;
 		boolean flag_catg = true, flag_cond = true;
+		
 		do {
 			System.out.print("----< Select category > : \n");
 			System.out.print("    1. Electronics\n");
@@ -470,7 +469,7 @@ public class Auction {
 					continue;
 			}
 			if(choice != '7') s_category = category.toString();
-			else s_category = "%";
+			else s_category = "%%%";
 		} while(!flag_catg);
 
 		do {
@@ -523,7 +522,7 @@ public class Auction {
 			System.out.println("---- Enter Seller ID to search : ");
 			System.out.println(" ** Enter 'any' if you want to see items from any seller. ");
 			seller = scanner.next();
-			if(seller.equals("any")) seller = "%";
+			if(seller.equals("any")) seller = "%%%";
 			System.out.println(seller);
 			scanner.nextLine();
 
@@ -549,7 +548,7 @@ public class Auction {
 			pstmt.setString(4,seller);
 			pstmt.setTimestamp(5,Timestamp.valueOf(datePosted));
 
-			rset = pstmt.executeQuery();
+			ResultSet rset = pstmt.executeQuery();
 			System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
 			System.out.println("-------------------------------------------------------------------------------------------------------");
 			while(rset.next()) {
