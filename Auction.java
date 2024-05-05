@@ -418,7 +418,7 @@ public class Auction {
 
 		char choice;
 		boolean flag_catg = true, flag_cond = true;
-		
+
 		do {
 			System.out.print("----< Select category > : \n");
 			System.out.print("    1. Electronics\n");
@@ -523,7 +523,6 @@ public class Auction {
 			System.out.println(" ** Enter 'any' if you want to see items from any seller. ");
 			seller = scanner.next();
 			if(seller.equals("any")) seller = "%%%";
-			System.out.println(seller);
 			scanner.nextLine();
 
 			System.out.println("---- Enter date posted (YYYY-MM-DD): ");
