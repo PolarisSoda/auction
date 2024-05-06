@@ -100,6 +100,56 @@ public class Auction {
 		return true;
 	}
 
+	private static boolean SignupMenu() {
+		String new_username, userpass, isAdmin;
+		System.out.print("----< Sign Up >\n");
+		System.out.print(" ** To go back, enter 'back' in user ID.\n");
+		System.out.print("---- user name: ");
+
+		try {
+			new_username = scanner.next();
+			scanner.nextLine();
+			if(new_username.equalsIgnoreCase("back")) return false;
+			if(new_username.equals("any")) { System.out.println("Error: 'any' is not allowed to be username"); return false; }
+
+			System.out.print("---- password: ");
+			userpass = scanner.next();
+			scanner.nextLine();
+
+			System.out.print("---- In this user an administrator? (Y/N): ");
+			isAdmin = scanner.next();
+			scanner.nextLine();
+		} catch(java.util.InputMismatchException e) {
+			System.out.println("Error: Invalid input is entered. Please select again.");
+			return false;
+		}
+		
+		// Admin is available only at input is Y or y.
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("select * from user_info where user_id = ?");
+			pstmt.setString(1,new_username);
+			ResultSet rset = pstmt.executeQuery();
+			if(rset.next()) {
+				System.out.println("Error: Already using username.");
+				pstmt.close();
+				return false;
+			}
+			pstmt.close();
+
+			pstmt = conn.prepareStatement("insert into user_info values(?, ?, ?)");
+			pstmt.setString(1,new_username);
+			pstmt.setString(2,userpass);
+			pstmt.setString(3,isAdmin.equalsIgnoreCase("Y") ? "Admin" : "User");
+			pstmt.executeUpdate();
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
+		System.out.println("Your account has been successfully created.\n");
+		return true;
+	}
+
 	private static boolean SellMenu() {
 		Category category = Category.ELECTRONICS; //초기값
 		Condition condition = Condition.NEW; //초기값
@@ -242,44 +292,6 @@ public class Auction {
 		}
 		
 		System.out.println("Your item has been successfully listed.\n");
-		return true;
-	}
-
-	private static boolean SignupMenu() {
-		String new_username, userpass, isAdmin;
-		System.out.print("----< Sign Up >\n");
-		System.out.print(" ** To go back, enter 'back' in user ID.\n");
-		System.out.print("---- user name: ");
-
-		try {
-			new_username = scanner.next();
-			scanner.nextLine();
-			if(new_username.equalsIgnoreCase("back")) return false;
-
-			System.out.print("---- password: ");
-			userpass = scanner.next();
-			scanner.nextLine();
-			System.out.print("---- In this user an administrator? (Y/N): ");
-			isAdmin = scanner.next();
-			scanner.nextLine();
-		} catch(java.util.InputMismatchException e) {
-			System.out.println("Error: Invalid input is entered. Please select again.");
-			return false;
-		}
-
-		// Admin is available only at input is Y or y.
-		try {
-			PreparedStatement pstmt = conn.prepareStatement("insert into user_info values(?, ?, ?)");
-			pstmt.setString(1,new_username);
-			pstmt.setString(2,userpass);
-			pstmt.setString(3,isAdmin.equalsIgnoreCase("Y") ? "Admin" : "User");
-			pstmt.executeUpdate();
-			pstmt.close();
-		} catch(SQLException e) {
-			System.out.println("SQLException : " + e);	
-			System.exit(1);
-		}
-		System.out.println("Your account has been successfully created.\n");
 		return true;
 	}
 
@@ -539,6 +551,7 @@ public class Auction {
 		//category,conditon,description,seller_id,date_posted
 		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire,bid_id,buyer_id,bid_posted,price
 		try {
+			String IQ = "select item_id,max(price) from bid_info group by item_id";
 			String Q = "select * from item_info natural left outer join bid_info where category like ? and condition = ? and description like ? and seller_id = ? and date_posted >= ?";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,s_category);
