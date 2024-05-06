@@ -120,7 +120,7 @@ public class Auction {
 			isAdmin = scanner.next();
 			scanner.nextLine();
 		} catch(java.util.InputMismatchException e) {
-			System.out.println("Error: Invalid input is entered. Please select again.");
+			System.out.println("Error: Invalid input is entered. Please select again.\n");
 			return false;
 		}
 		
@@ -130,7 +130,7 @@ public class Auction {
 			pstmt.setString(1,new_username);
 			ResultSet rset = pstmt.executeQuery();
 			if(rset.next()) {
-				System.out.println("Error: Already using username.");
+				System.out.println("Error: Already using username.\n");
 				pstmt.close();
 				return false;
 			}
@@ -172,7 +172,7 @@ public class Auction {
 			System.out.println("    P. Go Back to Previous Menu");
 
 			try {
-				choice = scanner.next().charAt(0);;
+				choice = scanner.next().charAt(0);
 			} catch(java.util.InputMismatchException e) {
 				System.out.println("Error: Invalid input is entered. Try again.");
 				continue;
@@ -251,19 +251,17 @@ public class Auction {
 		try {
 			System.out.println("---- Description of the item (one line): ");
 			description = scanner.nextLine();
-			System.out.println("---- Buy-It-Now price: ");
 
+			System.out.println("---- Buy-It-Now price: ");
 			while (!scanner.hasNextInt()) {
 				scanner.next();
 				System.out.println("Invalid input is entered. Please enter Buy-It-Now price: ");
 			}
-
 			price = scanner.nextInt();
 			scanner.nextLine();
-
+			
 			System.out.print("---- Bid closing date and time (YYYY-MM-DD HH:MM): ");
-			// you may assume users always enter valid date/time
-			String date = scanner.nextLine();  /* "2023-03-04 11:30"; */
+			String date = scanner.nextLine();  
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			dateTime = LocalDateTime.parse(date, formatter);
 		} catch (Exception e) {
@@ -277,7 +275,7 @@ public class Auction {
 			String new_id = GetNewID('I');
 			PreparedStatement pstmt = conn.prepareStatement("insert into item_info values(?,?,?,?,?,?,?,?)");
 			pstmt.setString(1,new_id);
-			pstmt.setString(2,Auction.username);
+			pstmt.setString(2,username);
 			pstmt.setString(3,category.toString());
 			pstmt.setString(4,condition.toString());
 			pstmt.setString(5,description);
@@ -293,132 +291,6 @@ public class Auction {
 		
 		System.out.println("Your item has been successfully listed.\n");
 		return true;
-	}
-
-	private static boolean AdminMenu() {
-		char choice;
-		String adminname, adminpass;
-		String keyword, seller;
-		System.out.print("----< Login as Administrator >\n");
-		System.out.print(" ** To go back, enter 'back' in user ID.\n");
-		System.out.print("---- admin ID: ");
-
-		try {
-			adminname = scanner.next();
-			scanner.nextLine();
-			if(adminname.equalsIgnoreCase("back")) return false;
-			System.out.print("---- password: ");
-			adminpass = scanner.nextLine();
-		} catch(java.util.InputMismatchException e) {
-			System.out.println("Error: Invalid input is entered. Try again.");
-			return false;
-		}
-
-		boolean login_success = false; 
-		try {
-			PreparedStatement pstmt = conn.prepareStatement("select user_id,password from user_info where user_id = ? and password = ? and role = 'Admin'");
-			pstmt.setString(1,adminname);
-			pstmt.setString(2,adminpass);
-			ResultSet rs = pstmt.executeQuery();
-			if(rs.next()) login_success = true;
-			pstmt.close();
-		} catch(SQLException e) {
-			System.out.println("SQLException : " + e);	
-			System.exit(1);
-		}
-		if(!login_success) {  
-			System.out.println("Error: Incorrect user name or password");
-			return false; 
-		}
-
-		//REAL ADMIN MENU BELOW
-
-		do {
-			System.out.println(
-					"----< Admin menu > \n" +
-					"    1. Print Sold Items per Category \n" +
-					"    2. Print Account Balance for Seller \n" +
-					"    3. Print Seller Ranking \n" +
-					"    4. Print Buyer Ranking \n" +
-					"    P. Go Back to Previous Menu"
-					);
-
-			try {
-				choice = scanner.next().charAt(0);;
-				scanner.nextLine();
-			} catch (java.util.InputMismatchException e) {
-				System.out.println("Error: Invalid input is entered. Try again.");
-				continue;
-			}
-
-			if (choice == '1') {
-				System.out.println("----Enter Category to search : ");
-				keyword = scanner.next();
-				scanner.nextLine();
-				/*TODO: Print Sold Items per Category */
-				System.out.println("sold item       | sold date       | seller ID   | buyer ID   | price | commissions");
-				System.out.println("----------------------------------------------------------------------------------");
-				/*
-				   while(rset.next()){
-				   }
-				 */
-				continue;
-			} else if (choice == '2') {
-				/*TODO: Print Account Balance for Seller */
-				System.out.println("---- Enter Seller ID to search : ");
-				seller = scanner.next();
-				scanner.nextLine();
-				System.out.println("sold item       | sold date       | buyer ID   | price | commissions");
-				System.out.println("--------------------------------------------------------------------");
-				/*
-				   while(rset.next()){
-				   }
-				 */
-				continue;
-			} else if (choice == '3') {
-				/*TODO: Print Seller Ranking */
-				System.out.println("seller ID   | # of items sold | Total Profit (excluding commissions)");
-				System.out.println("--------------------------------------------------------------------");
-				/*
-				   while(rset.next()){
-				   }
-				 */
-				continue;
-			} else if (choice == '4') {
-				/*TODO: Print Buyer Ranking */
-				System.out.println("buyer ID   | # of items purchased | Total Money Spent ");
-				System.out.println("------------------------------------------------------");
-				/*
-				   while(rset.next()){
-				   }
-				 */
-				continue;
-			} else if (choice == 'P' || choice == 'p') {
-				return false;
-			} else {
-				System.out.println("Error: Invalid input is entered. Try again.");
-				continue;
-			}
-		} while(true);
-	}
-
-	public static void CheckSellStatus(){
-		/* TODO: Check the status of the item the current user is selling */
-		ResultSet rset;
-
-		try {
-			String Q = "select * from item_info ";
-			PreparedStatement pstmt = conn.prepareStatement(Q);
-			rset = pstmt.executeQuery();
-			pstmt.close();
-		} catch(SQLException e) {
-			System.out.println("SQLException : " + e);	
-			System.exit(1);
-		}
-		
-
-		System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
-		System.out.println("-------------------------------------------------------------------------------\n");
 	}
 
 	public static boolean BuyItem(){
@@ -605,6 +477,132 @@ public class Auction {
                 /* TODO: if you are the current highest bidder, print the following */
 		System.out.println("Congratulations, you are the highest bidder.\n"); 
 		return true;
+	}
+
+	private static boolean AdminMenu() {
+		char choice;
+		String adminname, adminpass;
+		String keyword, seller;
+		System.out.print("----< Login as Administrator >\n");
+		System.out.print(" ** To go back, enter 'back' in user ID.\n");
+		System.out.print("---- admin ID: ");
+
+		try {
+			adminname = scanner.next();
+			scanner.nextLine();
+			if(adminname.equalsIgnoreCase("back")) return false;
+			System.out.print("---- password: ");
+			adminpass = scanner.nextLine();
+		} catch(java.util.InputMismatchException e) {
+			System.out.println("Error: Invalid input is entered. Try again.");
+			return false;
+		}
+
+		boolean login_success = false; 
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("select user_id,password from user_info where user_id = ? and password = ? and role = 'Admin'");
+			pstmt.setString(1,adminname);
+			pstmt.setString(2,adminpass);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) login_success = true;
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
+		if(!login_success) {  
+			System.out.println("Error: Incorrect user name or password");
+			return false; 
+		}
+
+		//REAL ADMIN MENU BELOW
+
+		do {
+			System.out.println(
+					"----< Admin menu > \n" +
+					"    1. Print Sold Items per Category \n" +
+					"    2. Print Account Balance for Seller \n" +
+					"    3. Print Seller Ranking \n" +
+					"    4. Print Buyer Ranking \n" +
+					"    P. Go Back to Previous Menu"
+					);
+
+			try {
+				choice = scanner.next().charAt(0);;
+				scanner.nextLine();
+			} catch (java.util.InputMismatchException e) {
+				System.out.println("Error: Invalid input is entered. Try again.");
+				continue;
+			}
+
+			if (choice == '1') {
+				System.out.println("----Enter Category to search : ");
+				keyword = scanner.next();
+				scanner.nextLine();
+				/*TODO: Print Sold Items per Category */
+				System.out.println("sold item       | sold date       | seller ID   | buyer ID   | price | commissions");
+				System.out.println("----------------------------------------------------------------------------------");
+				/*
+				   while(rset.next()){
+				   }
+				 */
+				continue;
+			} else if (choice == '2') {
+				/*TODO: Print Account Balance for Seller */
+				System.out.println("---- Enter Seller ID to search : ");
+				seller = scanner.next();
+				scanner.nextLine();
+				System.out.println("sold item       | sold date       | buyer ID   | price | commissions");
+				System.out.println("--------------------------------------------------------------------");
+				/*
+				   while(rset.next()){
+				   }
+				 */
+				continue;
+			} else if (choice == '3') {
+				/*TODO: Print Seller Ranking */
+				System.out.println("seller ID   | # of items sold | Total Profit (excluding commissions)");
+				System.out.println("--------------------------------------------------------------------");
+				/*
+				   while(rset.next()){
+				   }
+				 */
+				continue;
+			} else if (choice == '4') {
+				/*TODO: Print Buyer Ranking */
+				System.out.println("buyer ID   | # of items purchased | Total Money Spent ");
+				System.out.println("------------------------------------------------------");
+				/*
+				   while(rset.next()){
+				   }
+				 */
+				continue;
+			} else if (choice == 'P' || choice == 'p') {
+				return false;
+			} else {
+				System.out.println("Error: Invalid input is entered. Try again.");
+				continue;
+			}
+		} while(true);
+	}
+
+	public static void CheckSellStatus(){
+		/* TODO: Check the status of the item the current user is selling */
+		ResultSet rset;
+
+		try {
+			String Q = "select * from item_info ";
+			PreparedStatement pstmt = conn.prepareStatement(Q);
+			rset = pstmt.executeQuery();
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
+		
+
+		System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
+		System.out.println("-------------------------------------------------------------------------------\n");
 	}
 
 	public static void CheckBuyStatus(){
