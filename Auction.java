@@ -637,15 +637,22 @@ public class Auction {
 	public static void CheckSellStatus(){
 		/* TODO: Check the status of the item the current user is selling */
 		ResultSet rset;
-		LocalDateTime now_time = LocalDateTime.now().withNano(3);
+		LocalDateTime now_time = LocalDateTime.now();
 		try {
 			String Q = "select * from (item_info where seller_id like ? and date_expire >= ?) as A natural left outer join bid_info";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,username);
 			pstmt.setTimestamp(2,Timestamp.valueOf(now_time));
 			rset = pstmt.executeQuery();
+
+			ResultSetMetaData rsmt = rset.getMetaData();
+			for(int i=1; i<=rsmt.getColumnCount(); i++) System.out.print(rsmt.getColumnName(i) + " ");
+			System.out.println();
 			System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
 			System.out.println("-------------------------------------------------------------------------------\n");
+			while(rset.next()) {
+
+			}
 			pstmt.close();
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
