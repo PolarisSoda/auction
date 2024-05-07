@@ -448,18 +448,18 @@ public class Auction {
 			while(rset.next()) {
 				String arr[] = new String[9];
 				arr[0] = rset.getString(1); //item_id
-				arr[1] = rset.getString(5); //item_description
-				//arr[2] = rset.getString(4); //item_condition
-				//arr[3] = rset.getString(2); //item_seller
-				//arr[4] = rset.getString(6); //item_bin_price
-				//arr[5] = rset.getString(12) == null ? "-" : rset.getString(12); //item_current_bid
-				//arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
-				//arr[7] = Long.toString(Timestamp.valueOf(now_time).getTime() - rset.getTimestamp(8).getTime()); //time_left
-				//arr[8] = rset.getTimestamp(8).toString();
+				arr[1] = rset.getString(9); //item_description
+				arr[2] = rset.getString(8); //item_condition
+				arr[3] = rset.getString(6); //item_seller
+				arr[4] = rset.getString(10); //item_bin_price
+				arr[5] = rset.getString(5) == null ? "-" : rset.getString(12); //item_current_bid
+				arr[6] = rset.getString(3) == null ? "-" : rset.getString(10); //highest_bidder
+				arr[7] = Long.toString(Timestamp.valueOf(now_time).getTime() - rset.getTimestamp(12).getTime()); //time_left
+				arr[8] = rset.getTimestamp(12).toString();
 				if(arr[0].equals(prev)) continue;
 				prev = arr[0];
 
-				System.out.printf("%s %s",arr[0],arr[1]);
+				System.out.printf("%s\t | %s\t | %s\t | %s\t | %s\t | %s\t | %s\t | %s\t | %s\t\n",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8]);
 				System.out.println();
 			}
 			pstmt.close();
