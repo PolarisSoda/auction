@@ -426,7 +426,7 @@ public class Auction {
 			String IQ = (
 				"select * " +
 				"from item_info natural left outer join bid_info " +
-				"where category like ? and condition = ? and description like ? and seller_id like ? and date_posted >= ? and item_id not in billing_info"
+				"where category like ? and condition = ? and description like ? and seller_id like ? and date_posted >= ? and item_id not in (select item_id from billing_info)"
 			);
 			String Q = String.format("select * from (%s) as A natural left outer join bid_info order by price DESC,bid_posted ASC",IQ);
 		    
