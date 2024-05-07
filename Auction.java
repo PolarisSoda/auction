@@ -439,6 +439,9 @@ public class Auction {
 
 			LocalDateTime now_time = LocalDateTime.now();
 			ResultSet rset = pstmt.executeQuery();
+			ResultSetMetaData rsetmd = rset.getMetaData();
+			for(int i=1; i<=rsetmd.getColumnCount(); i++) System.out.print(rsetmd.getColumnName(i) + " ");
+			System.out.println();
 			String prev = "nope";
 			System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
 			System.out.println("-------------------------------------------------------------------------------------------------------");
