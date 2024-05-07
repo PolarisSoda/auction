@@ -12,6 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.text. *;
 import java.util. *;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
+
 public class Auction {
 	private static Scanner scanner = new Scanner(System.in);
 	private static Random rand = new Random();
@@ -422,8 +424,11 @@ public class Auction {
 
 		//category,conditon,description,seller_id,date_posted
 		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire,bid_id,buyer_id,bid_posted,price
+		LocalDateTime now_time = LocalDateTime.now().withNano(3);
 		ArrayList<String> items = new ArrayList<String>();
-		ArrayList<String> bestp = new ArrayList<String>();
+		ArrayList<String> binps = new ArrayList<String>();
+		ArrayList<String> hbids = new ArrayList<String>();
+
 		try {
 			String IQ = (
 				"select * " +
@@ -438,12 +443,8 @@ public class Auction {
 			pstmt.setString(3,keyword);
 			pstmt.setString(4,seller);
 			pstmt.setTimestamp(5,Timestamp.valueOf(datePosted));
-
-			LocalDateTime now_time = LocalDateTime.now();
 			ResultSet rset = pstmt.executeQuery();
-			ResultSetMetaData rsetmd = rset.getMetaData();
-			for(int i=1; i<=rsetmd.getColumnCount(); i++) System.out.print(rsetmd.getColumnName(i) + " ");
-			System.out.println();
+
 			String prev = "nope";
 			System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
 			System.out.println("-------------------------------------------------------------------------------------------------------");
@@ -457,12 +458,14 @@ public class Auction {
 				arr[5] = rset.getString(12) == null ? "-" : rset.getString(12); //item_current_bid
 				arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
 				arr[7] = Long.toString(Timestamp.valueOf(now_time).getTime() - rset.getTimestamp(8).getTime()); //time_left
-				arr[8] = rset.getTimestamp(8).toString();
+				arr[8] = rset.getTimestamp(8).toString(); //bid_close
+
 				if(arr[0].equals(prev)) continue; //이전과 같은 ID인가?
 				prev = arr[0];
 				if(arr[3].equals(username)) continue; //현재 user가 올린 item인가?
 				if(rset.getTimestamp(8).after(Timestamp.valueOf(now_time))) continue; //아 이미 끝나셨어?
 				System.out.printf("%s | %-16s | %-16s | %-16s | %-12s | %-12s | %-16s | %-12s | %s\n",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8]);
+				items.add(arr[0]); binps.add(arr[4]); hbids.add(arr[6]);
 			}
 			pstmt.close();
 		} catch(SQLException e) {
@@ -482,22 +485,44 @@ public class Auction {
 			System.out.println("Error: Invalid input is entered. Try again.");
 			return false;
 		}
+		now_time = LocalDateTime.now().withNano(3);
+
+		boolean found = false;
+		int idx = 0;
+		for(idx=0; idx<items.size(); idx++) {
+			if(items.get(idx).equals(selected_item)) {
+				found = true;
+				break;
+			}
+		}
+		if(found == false) {System.out.println("Error: "); return false;}
 
 		try {
-			PreparedStatement pstmt = conn.prepareStatement("sql");
-			pstmt.executeUpdate();
-			pstmt.close();
+			int bin = Integer.valueOf(binps.get(idx));
+			if(price >= bin) {
+				PreparedStatement pstmt = conn.prepareStatement("insert into billing_info values(?,?,?,?)");
+				pstmt.setString(1,items.get(idx)); //item_id
+				pstmt.setString(2,username); //buyer_id
+				pstmt.setTimestamp(3,Timestamp.valueOf(now_time));//purchased_date
+				pstmt.setInt(4,bin);
+				pstmt.executeQuery();
+				pstmt.close();
+				System.out.println("Congratulations, the item is yours now.\n"); 
+			} else {
+				PreparedStatement pstmt = conn.prepareStatement("insert into bid_info values(?,?,?,?,?)");
+				pstmt.setString(1,GetNewID('B')); //bid_id
+				pstmt.setString(2,items.get(idx)); //item_id
+				pstmt.setString(3,username); //buyer_id
+				pstmt.setTimestamp(4,Timestamp.valueOf(now_time)); //bid_posted
+				pstmt.setInt(5,price); //price
+				pstmt.executeQuery();
+				pstmt.close();
+				if(price > Integer.valueOf(hbids.get(idx))) System.out.println("Congratulations, you are the highest bidder.\n"); 
+			}
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
 			System.exit(1);
 		}
-		/* TODO: Buy-it-now or bid: If the entered price is higher or equal to Buy-It-Now price, the bid ends. */
-		/* Even if the bid price is higher than the Buy-It-Now price, the buyer pays the B-I-N price. */
-
-                /* TODO: if you won, print the following */
-		System.out.println("Congratulations, the item is yours now.\n"); 
-                /* TODO: if you are the current highest bidder, print the following */
-		System.out.println("Congratulations, you are the highest bidder.\n"); 
 		return true;
 	}
 
