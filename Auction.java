@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.text. *;
@@ -505,7 +506,7 @@ public class Auction {
 				pstmt.setString(2,username); //buyer_id
 				pstmt.setTimestamp(3,Timestamp.valueOf(now_time));//purchased_date
 				pstmt.setInt(4,bin);
-				pstmt.executeQuery();
+				pstmt.executeUpdate();
 				pstmt.close();
 				System.out.println("Congratulations, the item is yours now.\n"); 
 			} else {
@@ -515,7 +516,7 @@ public class Auction {
 				pstmt.setString(3,username); //buyer_id
 				pstmt.setTimestamp(4,Timestamp.valueOf(now_time)); //bid_posted
 				pstmt.setInt(5,price); //price
-				pstmt.executeQuery();
+				pstmt.executeUpdate();
 				pstmt.close();
 				if(price > Integer.valueOf(hbids.get(idx))) System.out.println("Congratulations, you are the highest bidder.\n"); 
 			}
@@ -636,20 +637,20 @@ public class Auction {
 	public static void CheckSellStatus(){
 		/* TODO: Check the status of the item the current user is selling */
 		ResultSet rset;
-
+		LocalDateTime now_time = LocalDateTime.now().withNano(3);
 		try {
-			String Q = "select * from item_info ";
+			String Q = "select * from (item_info where seller_id like ? and date_expire >= ?) as A natural left outer join bid_info";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
+			pstmt.setString(1,username);
+			pstmt.setTimestamp(2,Timestamp.valueOf(now_time));
 			rset = pstmt.executeQuery();
+			System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
+			System.out.println("-------------------------------------------------------------------------------\n");
 			pstmt.close();
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
 			System.exit(1);
 		}
-		
-
-		System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
-		System.out.println("-------------------------------------------------------------------------------\n");
 	}
 
 	public static void CheckBuyStatus(){
