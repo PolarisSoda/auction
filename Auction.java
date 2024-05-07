@@ -449,8 +449,8 @@ public class Auction {
 				arr[2] = rset.getString(4); //item_condition
 				arr[3] = rset.getString(2); //item_seller
 				arr[4] = rset.getString(6); //item_bin_price
-				arr[5] = rset.getString(12) == null ? "-" : rset.getString(12); //item_current_bid
-				arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
+				//arr[5] = rset.getString(12) == null ? "-" : rset.getString(12); //item_current_bid
+				//arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
 				arr[7] = Long.toString(Timestamp.valueOf(now_time).getTime() - rset.getTimestamp(8).getTime()); //time_left
 				arr[8] = rset.getTimestamp(8).toString();
 				if(arr[0].equals(prev)) continue;
