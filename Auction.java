@@ -428,7 +428,7 @@ public class Auction {
 				"from item_info natural left outer join bid_info " +
 				"where category like ? and condition = ? and description like ? and seller_id like ? and date_posted >= ? and item_id not in (select item_id from billing_info)"
 			);
-			String Q = String.format("select * from (%s) as A natural left outer join bid_info order by price DESC,bid_posted ASC",IQ);
+			String Q = String.format("select * from (%s) as A order by item_id ASC,price DESC,bid_posted ASC",IQ);
 		    
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,s_category);
@@ -451,7 +451,7 @@ public class Auction {
 				arr[1] = rset.getString(9); //item_description
 				arr[2] = rset.getString(8); //item_condition
 				arr[3] = rset.getString(6); //item_seller
-				arr[4] = rset.getString(10); //item_bin_price
+				arr[4] = rset.getString(1); //item_bin_price
 				arr[5] = rset.getString(5) == null ? "-" : rset.getString(12); //item_current_bid
 				arr[6] = rset.getString(3) == null ? "-" : rset.getString(10); //highest_bidder
 				arr[7] = Long.toString(Timestamp.valueOf(now_time).getTime() - rset.getTimestamp(12).getTime()); //time_left
