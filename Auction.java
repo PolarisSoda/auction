@@ -635,7 +635,7 @@ public class Auction {
 	}
 
 	public static void CheckSellStatus(){
-		/* TODO: Check the status of the item the current user is selling */
+		/* Check the status of the item the current user is selling */
 		ResultSet rset;
 		LocalDateTime now_time = LocalDateTime.now();
 		try {
@@ -648,10 +648,11 @@ public class Auction {
 			ResultSetMetaData rsmt = rset.getMetaData();
 			for(int i=1; i<=rsmt.getColumnCount(); i++) System.out.print(rsmt.getColumnName(i) + " ");
 			System.out.println();
+			
 			System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
 			System.out.println("-------------------------------------------------------------------------------\n");
 			while(rset.next()) {
-
+				//잘 출력하기.
 			}
 			pstmt.close();
 		} catch(SQLException e) {
@@ -663,9 +664,20 @@ public class Auction {
 	public static void CheckBuyStatus(){
 		/* TODO: Check the status of the item the current buyer is bidding on */
 		/* Even if you are outbidded or the bid closing date has passed, all the items this user has bidded on must be displayed */
-
-		System.out.println("item ID   | item description   | highest bidder | highest bidding price | your bidding price | bid closing date/time");
-		System.out.println("--------------------------------------------------------------------------------------------------------------------");
+		ResultSet rset;
+		try {
+			String AQ = "select item_id,max";
+			String IQ = "(select * from bid_info where buyer_id = ?)";
+			PreparedStatement pstmt = conn.prepareStatement(IQ);
+			rset = pstmt.executeQuery();
+			System.out.println("item ID   | item description   | highest bidder | highest bidding price | your bidding price | bid closing date/time");
+			System.out.println("--------------------------------------------------------------------------------------------------------------------");
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);
+			System.exit(1);
+		}
+		
 		/*
 		   while(rset.next(){
 		   System.out.println();
