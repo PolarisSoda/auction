@@ -445,7 +445,7 @@ public class Auction {
 			while(rset.next()) {
 				String arr[] = new String[9];
 				arr[0] = rset.getString(1); //item_id
-				//arr[1] = rset.getString(5); //item_description
+				arr[1] = rset.getString(5); //item_description
 				//arr[2] = rset.getString(4); //item_condition
 				//arr[3] = rset.getString(2); //item_seller
 				//arr[4] = rset.getString(6); //item_bin_price
@@ -456,7 +456,7 @@ public class Auction {
 				if(arr[0].equals(prev)) continue;
 				prev = arr[0];
 
-				System.out.println(arr[0]);
+				System.out.printf("%s %s",arr[0],arr[1]);
 				System.out.println();
 			}
 			pstmt.close();
