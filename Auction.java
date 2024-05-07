@@ -437,29 +437,28 @@ public class Auction {
 			pstmt.setString(4,seller);
 			pstmt.setTimestamp(5,Timestamp.valueOf(datePosted));
 
+			LocalDateTime now_time = LocalDateTime.now();
 			ResultSet rset = pstmt.executeQuery();
 			String prev = "nope";
 			System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
 			System.out.println("-------------------------------------------------------------------------------------------------------");
 			while(rset.next()) {
 				String arr[] = new String[9];
-				arr[0] = rset.getString(1);
-				arr[1] = rset.getString(5);
-				arr[2] = rset.getString(4);
-				arr[3] = rset.getString(2);
-				arr[4] = rset.getString()
+				int idx[] = {1,5,4,2,6,12,10,}
+				arr[0] = rset.getString(1); //item_id
+				arr[1] = rset.getString(5); //item_description
+				arr[2] = rset.getString(4); //item_condition
+				arr[3] = rset.getString(2); //item_seller
+				arr[4] = rset.getString(6); //item_bin_price
+				arr[5] = rset.getString(12) == null ? "-" : rset.getString(12); //item_current_bid
+				arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
+				arr[7] = Long.toString(Timestamp.valueOf(now_time).getTime() - rset.getTimestamp(8).getTime()); //time_left
+				arr[8] = rset.getTimestamp(8).toString();
 				if(arr[0].equals(prev)) continue;
 				prev = arr[0];
 
-				String now_desc = rset.getString(5);
-				String now_cond = rset.getString(4);
-				String 
-
-				System.out.printf("%s\t| ",rset.getString(1));
-				System.out.printf("%s\t| ",rset.getString(5));
-				System.out.printf("%s\t| ",rset.getString(3));
-				System.out.printf("%s\t| ",rset.getString(2));
-				System.out.printf("%s\t|\n",rset.getString(6));
+				for(int i=0; i<9; i++) System.out.print(arr[i]);
+				System.out.println();
 			}
 			pstmt.close();
 		} catch(SQLException e) {
