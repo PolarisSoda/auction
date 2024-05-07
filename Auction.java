@@ -425,7 +425,7 @@ public class Auction {
 
 		//category,conditon,description,seller_id,date_posted
 		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire,bid_id,buyer_id,bid_posted,price
-		LocalDateTime now_time = LocalDateTime.now().withNano(3);
+		LocalDateTime now_time = LocalDateTime.now();
 		ArrayList<String> items = new ArrayList<String>();
 		ArrayList<String> binps = new ArrayList<String>();
 		ArrayList<String> hbids = new ArrayList<String>();
