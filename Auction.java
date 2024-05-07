@@ -459,8 +459,7 @@ public class Auction {
 				if(arr[0].equals(prev)) continue;
 				prev = arr[0];
 
-				System.out.printf("%s\t | %s\t | %s\t | %s\t | %s\t | %s\t | %s\t | %s\t | %s\t\n",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8]);
-				System.out.println();
+				System.out.printf("%-32s\t | %-32s\t | %-32s\t | %-32s\t | %-32s\t | %-32s\t | %-32s\t | %-32s\t | %-32s\t\n",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8]);
 			}
 			pstmt.close();
 		} catch(SQLException e) {
