@@ -639,7 +639,7 @@ public class Auction {
 		ResultSet rset;
 		LocalDateTime now_time = LocalDateTime.now();
 		try {
-			String Q = "select * from (item_info where seller_id like ? and date_expire >= ?) as A natural left outer join bid_info";
+			String Q = "select * from (select * from item_info where seller_id like ? and date_expire >= ?) as A natural left outer join bid_info";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,username);
 			pstmt.setTimestamp(2,Timestamp.valueOf(now_time));
