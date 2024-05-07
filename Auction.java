@@ -422,6 +422,8 @@ public class Auction {
 
 		//category,conditon,description,seller_id,date_posted
 		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire,bid_id,buyer_id,bid_posted,price
+		ArrayList<String> items = new ArrayList<String>();
+		ArrayList<String> bestp = new ArrayList<String>();
 		try {
 			String IQ = (
 				"select * " +
@@ -456,12 +458,13 @@ public class Auction {
 				arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
 				arr[7] = Long.toString(Timestamp.valueOf(now_time).getTime() - rset.getTimestamp(8).getTime()); //time_left
 				arr[8] = rset.getTimestamp(8).toString();
-				if(arr[0].equals(prev)) continue;
+				if(arr[0].equals(prev)) continue; //이전과 같은 ID인가?
 				prev = arr[0];
-
+				if(arr[3].equals(username)) continue; //현재 user가 올린 item인가?
+				if(rset.getTimestamp(8).after(Timestamp.valueOf(now_time))) continue; //아 이미 끝나셨어?
 				System.out.printf("%s | %-16s | %-16s | %-16s | %-12s | %-12s | %-16s | %-12s | %s\n",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8]);
 			}
-			pstmt.close();1
+			pstmt.close();
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);	
 			System.exit(1);
