@@ -647,8 +647,8 @@ public class Auction {
 
 			//item_id bid_id buyer_id bid_posted price
 
-			System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
-			System.out.println("-------------------------------------------------------------------------------\n");
+			System.out.print("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
+			System.out.print("-------------------------------------------------------------------------------\n");
 			while(rset.next()) {
 				String ni = rset.getString(1);
 				String nb = rset.getString(3) == null ? "-" : rset.getString(3);
