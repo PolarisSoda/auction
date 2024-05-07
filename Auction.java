@@ -444,7 +444,6 @@ public class Auction {
 			System.out.println("-------------------------------------------------------------------------------------------------------");
 			while(rset.next()) {
 				String arr[] = new String[9];
-				int idx[] = {1,5,4,2,6,12,10,}
 				arr[0] = rset.getString(1); //item_id
 				arr[1] = rset.getString(5); //item_description
 				arr[2] = rset.getString(4); //item_condition
