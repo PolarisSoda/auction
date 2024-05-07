@@ -645,14 +645,16 @@ public class Auction {
 			pstmt.setTimestamp(2,Timestamp.valueOf(now_time));
 			rset = pstmt.executeQuery();
 
-			ResultSetMetaData rsmt = rset.getMetaData();
-			for(int i=1; i<=rsmt.getColumnCount(); i++) System.out.print(rsmt.getColumnName(i) + " ");
-			System.out.println();
-			
+			//item_id bid_id buyer_id bid_posted price
+
 			System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
 			System.out.println("-------------------------------------------------------------------------------\n");
 			while(rset.next()) {
-				//잘 출력하기.
+				String ni = rset.getString(1);
+				String nb = rset.getString(3) == null ? "-" : rset.getString(3);
+				String np = rset.getString(4) == null ? "-" : rset.getString(5);
+				String nt = rset.getString(4) == null ? "-" : rset.getString(4);
+				System.out.printf("%-16s | %-16s | %-16s | %-16s\n",ni,nb,np,nt);
 			}
 			pstmt.close();
 		} catch(SQLException e) {
