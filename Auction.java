@@ -315,7 +315,7 @@ public class Auction {
 			System.out.println("    P. Go Back to Previous Menu");
 
 			try {
-				choice = scanner.next().charAt(0);;
+				choice = scanner.next().charAt(0);
 				scanner.nextLine();
 			} catch (java.util.InputMismatchException e) {
 				System.out.println("Error: Invalid input is entered. Try again.");
@@ -353,7 +353,7 @@ public class Auction {
 					continue;
 			}
 			if(choice != '7') s_category = category.toString();
-			else s_category = "%%%";
+			else s_category = "%";
 		} while(!flag_catg);
 
 		do {
@@ -406,7 +406,7 @@ public class Auction {
 			System.out.println("---- Enter Seller ID to search : ");
 			System.out.println(" ** Enter 'any' if you want to see items from any seller. ");
 			seller = scanner.next();
-			if(seller.equals("any")) seller = "%%%";
+			if(seller.equals("any")) seller = "%";
 			scanner.nextLine();
 
 			System.out.println("---- Enter date posted (YYYY-MM-DD): ");
@@ -423,8 +423,13 @@ public class Auction {
 		//category,conditon,description,seller_id,date_posted
 		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire,bid_id,buyer_id,bid_posted,price
 		try {
-			String IQ = "select item_id,max(price) from bid_info group by item_id";
-			String Q = "select * from item_info natural left outer join bid_info where category like ? and condition = ? and description like ? and seller_id = ? and date_posted >= ?";
+			String IQ = (
+				"select * " +
+				"from item_info natural left outer join bid_info " +
+				"where category like ? and condition = ? and description like ? and seller_id like ? and date_posted >= ? and where item_id not in billing_info"
+			);
+			String Q = String.format("select * from (%s) as A natural left outer join bid_info order by price DESC,bid_posted ASC",IQ);
+		    
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,s_category);
 			pstmt.setString(2,s_condition);
@@ -433,9 +438,23 @@ public class Auction {
 			pstmt.setTimestamp(5,Timestamp.valueOf(datePosted));
 
 			ResultSet rset = pstmt.executeQuery();
+			String prev = "nope";
 			System.out.println("Item ID | Item description | Condition | Seller | Buy-It-Now | Current Bid | highest bidder | Time left | bid close");
 			System.out.println("-------------------------------------------------------------------------------------------------------");
 			while(rset.next()) {
+				String arr[] = new String[9];
+				arr[0] = rset.getString(1);
+				arr[1] = rset.getString(5);
+				arr[2] = rset.getString(4);
+				arr[3] = rset.getString(2);
+				arr[4] = rset.getString()
+				if(arr[0].equals(prev)) continue;
+				prev = arr[0];
+
+				String now_desc = rset.getString(5);
+				String now_cond = rset.getString(4);
+				String 
+
 				System.out.printf("%s\t| ",rset.getString(1));
 				System.out.printf("%s\t| ",rset.getString(5));
 				System.out.printf("%s\t| ",rset.getString(3));
