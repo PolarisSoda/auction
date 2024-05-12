@@ -47,7 +47,7 @@ CREATE TABLE bid_info (
 CREATE TABLE billing_info (
     item_id varchar(32),
     buyer_id varchar(32),
-    purchased_date(6) timestamp not null,
+    purchased_date timestamp(6) not null,
     price int not null,
     primary key(item_id),
     foreign key(item_id) references item_info(item_id) on update cascade on delete cascade,
