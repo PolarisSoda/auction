@@ -460,7 +460,7 @@ public class Auction {
 				arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
 				arr[7] = Long.toString(Timestamp.valueOf(now_time).getTime() - rset.getTimestamp(8).getTime()); //time_left
 				arr[8] = rset.getTimestamp(8).toString(); //bid_close
-
+				System.out.println("HELLO");
 				if(arr[0].equals(prev)) continue; //이전과 같은 ID인가?
 				prev = arr[0];
 				if(arr[3].equals(username)) continue; //현재 user가 올린 item인가?
