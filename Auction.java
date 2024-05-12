@@ -487,7 +487,7 @@ public class Auction {
 			System.out.println("Error: Invalid input is entered. Try again.");
 			return false;
 		}
-		now_time = LocalDateTime.now().withNano(3);
+		now_time = LocalDateTime.now();
 
 		boolean found = false;
 		int idx = 0;
@@ -497,8 +497,9 @@ public class Auction {
 				break;
 			}
 		}
-		if(found == false) {System.out.println("Error: "); return false;}
-
+		if(found == false) {System.out.println("Error: That item is not in your query."); return false;}
+		
+		System.out.println(binps.get(idx) + "!!!!!");
 		try {
 			int bin = Integer.valueOf(binps.get(idx));
 			if(price >= bin) {
@@ -669,11 +670,12 @@ public class Auction {
 		/* TODO: Check the status of the item the current buyer is bidding on */
 		/* Even if you are outbidded or the bid closing date has passed, all the items this user has bidded on must be displayed */
 		ResultSet rset;
+		LocalDateTime now_time = LocalDateTime.now();
 		try {
+			String Q = "select * from bid_info where buyer_id like ? order by item_id ASC"; //현재 구매자가 bidding 올린 모든 쿼리.
 			//select distinct item_id from bid_info where buyer_id = ?; //실제 필요한 id.
 			//select * from bid_info where item_id in (select distinct item_id from bid_info where buyer_id = 'user3') order by item_id ASC,price DESC, bid_posted ASC;
 			//select * from item_info natural join (select item_id,max(price) as user_bid from bid_info where buyer_id = 'user3' group by item_id) as A;
-			String AQ = "select item_id,max";
 			String IQ = "(select item_id,max(price) as user_bid from bid_info where buyer_id = ? group by item_id)"; //현재 유저가 참여한 경매 목록과 그것의 최대 bid.
 			PreparedStatement pstmt = conn.prepareStatement(IQ);
 			rset = pstmt.executeQuery();
