@@ -641,7 +641,7 @@ public class Auction {
 		ResultSet rset;
 		LocalDateTime now_time = LocalDateTime.now();
 		try {
-			String IQ = "(select item_id from item_info where seller_id like ? and date_expire >= ? and item_id not in (select item_id from bidding_info))";
+			String IQ = "(select item_id from item_info where seller_id like ? and date_expire >= ? and item_id not in (select item_id from billing_info))";
 			String Q = "select * from " + IQ + " as A natural left outer join bid_info" + " order by item_id";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,username);
