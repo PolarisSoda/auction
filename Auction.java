@@ -271,7 +271,7 @@ public class Auction {
 			System.out.println("Error: Invalid input is entered. Going back to the previous menu.");
 			return false;
 		}
-		postTime = LocalDateTime.now().withNano(0);
+		postTime = LocalDateTime.now();
 
 		//item_id,seller_id,category,condition,description,bin_price,date_posted,date_expire
 		try {
