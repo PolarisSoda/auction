@@ -460,7 +460,7 @@ public class Auction {
 				arr[4] = rset.getString(6); //item_bin_price
 				arr[5] = rset.getString(12) == null ? "-" : rset.getString(12); //item_current_bid
 				arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
-				arr[7] = rset.getTimestamp(13).toString(); //time_left
+				arr[7] = rset.getString(13); //time_left
 				arr[8] = rset.getTimestamp(8).toString(); //bid_close
 				if(arr[0].equals(prev)) continue; //이전과 같은 ID인가?
 				prev = arr[0];
