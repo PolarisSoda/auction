@@ -433,17 +433,18 @@ public class Auction {
 
 		try {
 			String IQ = (
-				"select * " +
+				"select *, date_expire-? as time_left " +
 				"from item_info natural left outer join bid_info " +
 				"where category like ? and condition = ? and description like ? and seller_id like ? and date_posted >= ? and item_id not in (select item_id from billing_info)"
 			);
 			String Q = String.format("select * from (%s) as A order by item_id ASC,price DESC,bid_posted ASC",IQ);
 		    
 			PreparedStatement pstmt = conn.prepareStatement(Q);
-			pstmt.setString(1,s_category);
-			pstmt.setString(2,s_condition);
-			pstmt.setString(3,keyword);
-			pstmt.setString(4,seller);
+			pstmt.setTimestamp(1,Timestamp.valueOf(now_time));
+			pstmt.setString(2,s_category);
+			pstmt.setString(3,s_condition);
+			pstmt.setString(4,keyword);
+			pstmt.setString(5,seller);
 			pstmt.setTimestamp(5,Timestamp.valueOf(datePosted));
 			ResultSet rset = pstmt.executeQuery();
 
@@ -459,11 +460,8 @@ public class Auction {
 				arr[4] = rset.getString(6); //item_bin_price
 				arr[5] = rset.getString(12) == null ? "-" : rset.getString(12); //item_current_bid
 				arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
-				Long interval = rset.getTimestamp(8).getTime() - Timestamp.valueOf(now_time).getTime();
-				LocalDateTime triggerTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(interval),TimeZone.getDefault().toZoneId());
-				arr[7] = triggerTime.toString(); //time_left
+				arr[7] = rset.getTimestamp(13).toString(); //time_left
 				arr[8] = rset.getTimestamp(8).toString(); //bid_close
-				System.out.println("HELLO");
 				if(arr[0].equals(prev)) continue; //이전과 같은 ID인가?
 				prev = arr[0];
 				if(arr[3].equals(username)) continue; //현재 user가 올린 item인가?
