@@ -445,7 +445,7 @@ public class Auction {
 			pstmt.setString(3,s_condition);
 			pstmt.setString(4,keyword);
 			pstmt.setString(5,seller);
-			pstmt.setTimestamp(5,Timestamp.valueOf(datePosted));
+			pstmt.setTimestamp(6,Timestamp.valueOf(datePosted));
 			ResultSet rset = pstmt.executeQuery();
 
 			String prev = "nope";
