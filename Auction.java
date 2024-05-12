@@ -460,7 +460,7 @@ public class Auction {
 				arr[5] = rset.getString(12) == null ? "-" : rset.getString(12); //item_current_bid
 				arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
 				Long interval = rset.getTimestamp(8).getTime() - Timestamp.valueOf(now_time).getTime();
-				LocalDateTime triggerTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(interval),TimeZone.getDefault().toZoneId());
+				LocalDateTime triggerTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(interval),TimeZone.getDefault().toZoneId());
 				arr[7] = triggerTime.toString(); //time_left
 				arr[8] = rset.getTimestamp(8).toString(); //bid_close
 				System.out.println("HELLO");
