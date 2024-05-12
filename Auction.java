@@ -655,7 +655,7 @@ public class Auction {
 			while(rset.next()) {
 				String ni = rset.getString(1);
 				String nb = rset.getString(3) == null ? "-" : rset.getString(3);
-				String np = rset.getString(4) == null ? "-" : rset.getString(5);
+				String np = rset.getString(5) == null ? "-" : rset.getString(5);
 				String nt = rset.getString(4) == null ? "-" : rset.getString(4);
 				System.out.printf("%-16s | %-16s | %-16s | %-16s\n",ni,nb,np,nt);
 			}
