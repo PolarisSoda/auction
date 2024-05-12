@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -458,7 +459,10 @@ public class Auction {
 				arr[4] = rset.getString(6); //item_bin_price
 				arr[5] = rset.getString(12) == null ? "-" : rset.getString(12); //item_current_bid
 				arr[6] = rset.getString(10) == null ? "-" : rset.getString(10); //highest_bidder
-				arr[7] = Long.toString(Timestamp.valueOf(now_time).getTime() - rset.getTimestamp(8).getTime()); //time_left
+				Long interval = rset.getTimestamp(8).getTime() - Timestamp.valueOf(now_time).getTime();
+				interval *= 10000;
+				LocalDateTime triggerTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(interval),TimeZone.getDefault().toZoneId());
+				arr[7] = triggerTime.toString(); //time_left
 				arr[8] = rset.getTimestamp(8).toString(); //bid_close
 				System.out.println("HELLO");
 				if(arr[0].equals(prev)) continue; //이전과 같은 ID인가?
