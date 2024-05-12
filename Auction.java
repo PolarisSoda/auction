@@ -638,18 +638,17 @@ public class Auction {
 
 	public static void CheckSellStatus(){
 		/* Check the status of the item the current user is selling */
-		//전부다 출력해도 상관없다.
 		ResultSet rset;
 		LocalDateTime now_time = LocalDateTime.now();
 		try {
-			String Q = "select * from (select item_id from item_info where seller_id like ? and date_expire >= ?) as A natural left outer join bid_info";
+			String Q = "select * from (select item_id from item_info where seller_id like ? and date_expire >= ?) as A natural left outer join bid_info" +
+					   "where item_id not in (select item_id from billing_info) order by item_id";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,username);
 			pstmt.setTimestamp(2,Timestamp.valueOf(now_time));
 			rset = pstmt.executeQuery();
 
 			//item_id bid_id buyer_id bid_posted price
-
 			System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
 			System.out.println("-------------------------------------------------------------------------------\n");
 			while(rset.next()) {
