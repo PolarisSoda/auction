@@ -680,7 +680,7 @@ public class Auction {
 			System.out.println("item ID   | item description   | highest bidder | highest bidding price | your bidding price | bid closing date/time");
 			System.out.println("--------------------------------------------------------------------------------------------------------------------");
 			while(rset.next()) {
-				for(int i=0; i<rsmt.getColumnCount(); i++) {
+				for(int i=1; i<=rsmt.getColumnCount(); i++) {
 					System.out.print(rset.getString(i) + " ");
 				}
 			}
