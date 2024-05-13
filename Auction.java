@@ -682,8 +682,9 @@ public class Auction {
 			while(rset.next()) {
 				for(int i=1; i<=rsmt.getColumnCount(); i++) {
 					System.out.print(rset.getString(i) + " ");
-					System.out.println();
+					
 				}
+				System.out.println();
 			}
 			pstmt.close();
 		} catch(SQLException e) {
