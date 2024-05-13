@@ -618,7 +618,7 @@ public class Auction {
 				System.out.println("sold item       | sold date       | seller ID   | buyer ID   | price | commissions");
 				System.out.println("----------------------------------------------------------------------------------");
 				try {
-					String IQ = "select item_id,category,seller_id from item_info where category like ?";
+					String IQ = "select item_id,category,seller_id from item_info where category = ?";
 					String Q = String.format("select * from billing_info natural join (%s) as A",IQ);
 					PreparedStatement pstmt = conn.prepareStatement(Q);
 					pstmt.setString(1,keyword);
@@ -647,20 +647,19 @@ public class Auction {
 				System.out.println("sold item       | sold date       | buyer ID   | price | commissions");
 				System.out.println("--------------------------------------------------------------------");
 				try {
-					String IQ = "select item_id,category,seller_id from item_info where category like ?";
+					String IQ = "select item_id from item_info where seller_id = ?";
 					String Q = String.format("select * from billing_info natural join (%s) as A",IQ);
 					PreparedStatement pstmt = conn.prepareStatement(Q);
 					pstmt.setString(1,seller);
 					ResultSet rs = pstmt.executeQuery();
-					//  item_id   | buyer_id |       purchased_date       | price | category | seller_id
+					//  item_id   | buyer_id |       purchased_date       | price;
 					if(rs.next()) {
 						String now_item = rs.getString(1);
 						String now_date = rs.getString(3);
-						String now_seller = rs.getString(6);
 						String now_buyer = rs.getString(2);
 						int now_price = rs.getInt(4);
 						int comm = now_price/10;
-
+						System.out.printf("%s | %s | %s | %s | %s\n",now_item,now_date,now_buyer,Integer.toString(now_price),Integer.toString(comm));
 					}
 					pstmt.close();
 				} catch(SQLException e) {
@@ -670,6 +669,7 @@ public class Auction {
 				continue;
 			} else if (choice == '3') {
 				/*TODO: Print Seller Ranking */
+				
 				System.out.println("seller ID   | # of items sold | Total Profit (excluding commissions)");
 				System.out.println("--------------------------------------------------------------------");
 				/*
@@ -681,10 +681,21 @@ public class Auction {
 				/*TODO: Print Buyer Ranking */
 				System.out.println("buyer ID   | # of items purchased | Total Money Spent ");
 				System.out.println("------------------------------------------------------");
-				/*
-				   while(rset.next()){
-				   }
-				 */
+				try {
+					String Q = "select buyer_id,count(item_id),sum(price) as from billing_info group by buyer_id order by sum DESC,count DESC";
+					PreparedStatement pstmt = conn.prepareStatement(Q);
+					ResultSet rs = pstmt.executeQuery();
+					if(rs.next()) {
+						String now_buyer = rs.getString(1);
+						String now_count = rs.getString(2);
+						String now_spent = rs.getString(3);
+						System.out.printf("%s | %s | %s\n",now_buyer,now_count,now_spent);
+					}
+					pstmt.close();
+				} catch(SQLException e) {
+					System.out.println("SQLException : " + e);	
+					System.exit(1);
+				}
 				continue;
 			} else if (choice == 'P' || choice == 'p') {
 				return false;
