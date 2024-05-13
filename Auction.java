@@ -624,7 +624,7 @@ public class Auction {
 					pstmt.setString(1,keyword);
 					ResultSet rs = pstmt.executeQuery();
 					//  item_id   | buyer_id |       purchased_date       | price | category | seller_id
-					if(rs.next()) {
+					while(rs.next()) {
 						String now_item = rs.getString(1);
 						String now_date = rs.getString(3);
 						String now_seller = rs.getString(6);
@@ -653,7 +653,7 @@ public class Auction {
 					pstmt.setString(1,seller);
 					ResultSet rs = pstmt.executeQuery();
 					//  item_id   | buyer_id |       purchased_date       | price;
-					if(rs.next()) {
+					while(rs.next()) {
 						String now_item = rs.getString(1);
 						String now_date = rs.getString(3);
 						String now_buyer = rs.getString(2);
@@ -672,10 +672,22 @@ public class Auction {
 				
 				System.out.println("seller ID   | # of items sold | Total Profit (excluding commissions)");
 				System.out.println("--------------------------------------------------------------------");
-				/*
-				   while(rset.next()){
-				   }
-				 */
+				try {
+					String IQ = "(select item_id,seller_id from item_info) as A";
+					String Q = String.format("select seller_id,count(item_id),sum(price) from billing_info natural join %s group by seller_id order by sum DESC,count DESC",IQ);
+					PreparedStatement pstmt = conn.prepareStatement(Q);
+					ResultSet rs = pstmt.executeQuery();
+					while(rs.next()) {
+						String now_seller = rs.getString(1);
+						String now_count = rs.getString(2);
+						int now_got = rs.getInt(3)*9/10;
+						System.out.printf("%s | %s | %s\n",now_seller,now_count,Integer.toString(now_got));
+					}
+					pstmt.close();
+				} catch(SQLException e) {
+					System.out.println("SQLException : " + e);	
+					System.exit(1);
+				}
 				continue;
 			} else if (choice == '4') {
 				/*TODO: Print Buyer Ranking */
@@ -685,7 +697,7 @@ public class Auction {
 					String Q = "select buyer_id,count(item_id),sum(price) from billing_info group by buyer_id order by sum DESC,count DESC";
 					PreparedStatement pstmt = conn.prepareStatement(Q);
 					ResultSet rs = pstmt.executeQuery();
-					if(rs.next()) {
+					while(rs.next()) {
 						String now_buyer = rs.getString(1);
 						String now_count = rs.getString(2);
 						String now_spent = rs.getString(3);
