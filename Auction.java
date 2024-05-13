@@ -41,7 +41,7 @@ public class Auction {
 		LocalDateTime now_time = LocalDateTime.now();
 		ArrayList<String> item_expired = new ArrayList<String>();
 		try {
-			PreparedStatement pstmt = conn.prepareStatement("select item_id from item_info where date_expire <= ? and item_id in (select item_id from bid_info)");
+			PreparedStatement pstmt = conn.prepareStatement("select item_id from item_info where date_expire <= ? and item_id in (select item_id from bid_info) and item_id not in (select item_id from billing_info)");
 			pstmt.setTimestamp(1,Timestamp.valueOf(now_time));
 			ResultSet rset = pstmt.executeQuery();
 			while(rset.next()) item_expired.add(rset.getString(1));
@@ -492,7 +492,7 @@ public class Auction {
 				prev = arr[0];
 				if(arr[3].equals(username)) continue; //현재 user가 올린 item인가?
 				if(rset.getTimestamp(8).before(Timestamp.valueOf(now_time))) continue; //아 이미 끝나셨어?
-				System.out.printf("%s | %-16s | %-16s | %-16s | %-12s | %-12s | %-16s | %-12s | %s\n",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8]);
+				System.out.printf("%s | %-16s | %-16s | %-16s | %-16s | %-16s | %-16s | %-16s | %s\n",arr[0],arr[1],arr[2],arr[3],arr[4],arr[5],arr[6],arr[7],arr[8]);
 				items.add(arr[0]); binps.add(arr[4]); hbids.add(arr[5]);
 			}
 			pstmt.close();
@@ -615,6 +615,7 @@ public class Auction {
 				keyword = scanner.next();
 				scanner.nextLine();
 				/*TODO: Print Sold Items per Category */
+				Update();
 				System.out.println("sold item       | sold date       | seller ID   | buyer ID   | price | commissions");
 				System.out.println("----------------------------------------------------------------------------------");
 				try {
@@ -644,6 +645,7 @@ public class Auction {
 				System.out.println("---- Enter Seller ID to search : ");
 				seller = scanner.next();
 				scanner.nextLine();
+				Update();
 				System.out.println("sold item       | sold date       | buyer ID   | price | commissions");
 				System.out.println("--------------------------------------------------------------------");
 				try {
@@ -669,7 +671,7 @@ public class Auction {
 				continue;
 			} else if (choice == '3') {
 				/*TODO: Print Seller Ranking */
-				
+				Update();
 				System.out.println("seller ID   | # of items sold | Total Profit (excluding commissions)");
 				System.out.println("--------------------------------------------------------------------");
 				try {
@@ -691,6 +693,7 @@ public class Auction {
 				continue;
 			} else if (choice == '4') {
 				/*TODO: Print Buyer Ranking */
+				Update();
 				System.out.println("buyer ID   | # of items purchased | Total Money Spent ");
 				System.out.println("------------------------------------------------------");
 				try {
@@ -720,10 +723,11 @@ public class Auction {
 
 	public static void CheckSellStatus(){
 		/* Check the status of the item the current user is selling */
+		Update();
 		ResultSet rset;
 		LocalDateTime now_time = LocalDateTime.now();
 		try {
-			String IQ = "(select item_id from item_info where seller_id like ? and date_expire >= ? and item_id not in (select item_id from billing_info))";
+			String IQ = "(select item_id from item_info where seller_id = ? and date_expire >= ? and item_id not in (select item_id from billing_info))";
 			String Q = "select * from " + IQ + " as A natural left outer join bid_info" + " order by item_id ASC,price DESC,bid_posted ASC";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,username);
