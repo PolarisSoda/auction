@@ -675,15 +675,16 @@ public class Auction {
 			PreparedStatement pstmt = conn.prepareStatement(TQ);
 			pstmt.setString(1,username);
 			rset = pstmt.executeQuery();
-			ResultSetMetaData rsmt = rset.getMetaData();
+
+			//bid_id,item_id,price,higher_bidder,higher_price,bid_posted,item_id,description,date_expire
 			String prev = "none";
 			System.out.println("item ID   | item description   | highest bidder | highest bidding price | your bidding price | bid closing date/time");
 			System.out.println("--------------------------------------------------------------------------------------------------------------------");
 			while(rset.next()) {
-				for(int i=1; i<=rsmt.getColumnCount(); i++) {
-					System.out.print(rset.getString(i) + " ");
-					
-				}
+				String now_bid = rset.getString(1);
+				if(now_bid.equals(prev)) continue;
+				prev = now_bid;
+				for(int i=1; i<=9; i++) System.out.print(rset.getString(i) + " ");
 				System.out.println();
 			}
 			pstmt.close();
