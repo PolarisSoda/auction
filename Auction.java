@@ -499,7 +499,6 @@ public class Auction {
 		}
 		if(found == false) {System.out.println("Error: That item is not in your query."); return false;}
 		
-		System.out.println(binps.get(idx) + "!!!!!");
 		try {
 			int bin = Integer.valueOf(binps.get(idx));
 			if(price >= bin) {
@@ -642,7 +641,7 @@ public class Auction {
 		LocalDateTime now_time = LocalDateTime.now();
 		try {
 			String IQ = "(select item_id from item_info where seller_id like ? and date_expire >= ? and item_id not in (select item_id from billing_info))";
-			String Q = "select * from " + IQ + " as A natural left outer join bid_info" + " order by item_id";
+			String Q = "select * from " + IQ + " as A natural left outer join bid_info" + " order by item_id ASC,price DESC,bid_posted ASC";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,username);
 			pstmt.setTimestamp(2,Timestamp.valueOf(now_time));
@@ -652,10 +651,10 @@ public class Auction {
 			System.out.println("item listed in Auction | bidder (buyer ID) | bidding price | bidding date/time \n");
 			System.out.println("-------------------------------------------------------------------------------\n");
 			while(rset.next()) {
-				String ni = rset.getString(1);
-				String nb = rset.getString(3) == null ? "-" : rset.getString(3);
-				String np = rset.getString(5) == null ? "-" : rset.getString(5);
-				String nt = rset.getString(4) == null ? "-" : rset.getString(4);
+				String ni = rset.getString(1); //item_id 
+				String nb = rset.getString(3) == null ? "-" : rset.getString(3); //buyer_id
+				String np = rset.getString(5) == null ? "-" : rset.getString(5); //price
+				String nt = rset.getString(4) == null ? "-" : rset.getString(4); //bid_posted
 				System.out.printf("%-16s | %-16s | %-16s | %-16s\n",ni,nb,np,nt);
 			}
 			pstmt.close();
@@ -669,28 +668,27 @@ public class Auction {
 		/* TODO: Check the status of the item the current buyer is bidding on */
 		/* Even if you are outbidded or the bid closing date has passed, all the items this user has bidded on must be displayed */
 		ResultSet rset;
-		LocalDateTime now_time = LocalDateTime.now();
 		try {
-			String Q = "select * from bid_info where buyer_id like ? order by item_id ASC"; //현재 구매자가 bidding 올린 모든 쿼리.
-			//select distinct item_id from bid_info where buyer_id = ?; //실제 필요한 id.
-			//select * from bid_info where item_id in (select distinct item_id from bid_info where buyer_id = 'user3') order by item_id ASC,price DESC, bid_posted ASC;
-			//select * from item_info natural join (select item_id,max(price) as user_bid from bid_info where buyer_id = 'user3' group by item_id) as A;
-			String IQ = "(select item_id,max(price) as user_bid from bid_info where buyer_id = ? group by item_id)"; //현재 유저가 참여한 경매 목록과 그것의 최대 bid.
-			PreparedStatement pstmt = conn.prepareStatement(IQ);
+			String IQ = "select A.bid_id,A.item_id,A.price,B.buyer_id hb,B.price hp,B.bid_posted ht from (select * from bid_info where buyer_id = ?) as A join bid_info as B on A.item_id = B.item_id";
+			String Q = "select * from C join (select item_id,description,date_expire from item_info) as A on A.item_id = C.item_id order by bid_id ASC,hp DESC,ht ASC";
+			String TQ = String.format("with C as (%s) %s",IQ,Q);
+			PreparedStatement pstmt = conn.prepareStatement(TQ);
+			pstmt.setString(1,username);
 			rset = pstmt.executeQuery();
+			ResultSetMetaData rsmt = rset.getMetaData();
+			String prev = "none";
 			System.out.println("item ID   | item description   | highest bidder | highest bidding price | your bidding price | bid closing date/time");
 			System.out.println("--------------------------------------------------------------------------------------------------------------------");
+			while(rset.next()) {
+				for(int i=0; i<rsmt.getColumnCount(); i++) {
+					System.out.print(rset.getString(i) + " ");
+				}
+			}
 			pstmt.close();
 		} catch(SQLException e) {
 			System.out.println("SQLException : " + e);
 			System.exit(1);
 		}
-		
-		/*
-		   while(rset.next(){
-		   System.out.println();
-		   }
-		 */
 	}
 
 	public static void CheckAccount(){
