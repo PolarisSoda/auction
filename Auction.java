@@ -682,7 +682,7 @@ public class Auction {
 				System.out.println("buyer ID   | # of items purchased | Total Money Spent ");
 				System.out.println("------------------------------------------------------");
 				try {
-					String Q = "select buyer_id,count(item_id),sum(price) as from billing_info group by buyer_id order by sum DESC,count DESC";
+					String Q = "select buyer_id,count(item_id),sum(price) from billing_info group by buyer_id order by sum DESC,count DESC";
 					PreparedStatement pstmt = conn.prepareStatement(Q);
 					ResultSet rs = pstmt.executeQuery();
 					if(rs.next()) {
