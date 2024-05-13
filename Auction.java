@@ -756,7 +756,7 @@ public class Auction {
 		System.out.println("item category  | item ID   | purchased date | puchased price  | seller ID ");
 		System.out.println("--------------------------------------------------------------------------");
 		try {
-			String Q = "(select * from billing_info natural join (select item_id,category,seller_id from item_info) as A where buyer_id = ?";
+			String Q = "select * from billing_info natural join (select item_id,category,seller_id from item_info) as A where buyer_id = ?";
 			PreparedStatement pstmt = conn.prepareStatement(Q);
 			pstmt.setString(1,username);
 			ResultSet rset = pstmt.executeQuery();
