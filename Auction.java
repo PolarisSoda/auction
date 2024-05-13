@@ -37,6 +37,32 @@ public class Auction {
 		ACCEPTABLE
 	}
 
+	private static void Update() {
+		LocalDateTime now_time = LocalDateTime.now();
+		ArrayList<String> item_expired = new ArrayList<String>();
+		try {
+			PreparedStatement pstmt = conn.prepareStatement("select item_id from item_info where date_expire <= ? and item_id in (select item_id from bid_info)");
+			pstmt.setTimestamp(1,Timestamp.valueOf(now_time));
+			ResultSet rset = pstmt.executeQuery();
+			while(rset.next()) item_expired.add(rset.getString(1));
+			pstmt.close();
+
+			for(int i=0; i<item_expired.size(); i++) {
+				String now_item = item_expired.get(i);
+				String AQ = "(select * from bid_info where item_id = ? order by price DESC,bid_posted ASC limit 1) as A";
+				String BQ = "(select item_id,date_expire from item_info) as B";
+				String IQ = String.format("select item_id,buyer_id,date_expire,price from %s natural join %s",AQ,BQ);
+				String Q = String.format("insert into billing_info (%s)",IQ);
+				pstmt = conn.prepareStatement(Q);
+				pstmt.setString(1,now_item);
+				pstmt.executeUpdate();
+			}
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
+	}
+
 	private static String GetNewID(char identifier) {
 		String ret;
 		while(true) {
@@ -690,7 +716,7 @@ public class Auction {
 				String now_hp = rset.getString(5);
 				String now_val = rset.getString(3);
 				String now_time = rset.getString(9);
-				System.out.printf("%-12s %-12s %-12s %-12s %-12s %-12s\n",now_item,now_desc,now_hb,now_hp,now_val,now_time);
+				System.out.printf("%-12s|%-12s|%-12s|%-12s|%-12s|%-12s\n",now_item,now_desc,now_hb,now_hp,now_val,now_time);
 			}
 			pstmt.close();
 		} catch(SQLException e) {
@@ -701,22 +727,52 @@ public class Auction {
 
 	public static void CheckAccount(){
 		/* TODO: Check the balance of the current user.  */
+		Update(); //Update billing_info;
 		System.out.println("[Sold Items] \n");
 		System.out.println("item category  | item ID   | sold date | sold price  | buyer ID | commission  ");
 		System.out.println("------------------------------------------------------------------------------");
-		/*
-		   while(rset.next(){
-		   System.out.println();
-		   }
-		 */
+		try {
+			String IQ = "select item_id,category,seller_id from item_info where seller_id = ?";
+			String Q = String.format("select * from billing_info natural join (%s) as A",IQ);
+			PreparedStatement pstmt = conn.prepareStatement(Q);
+			pstmt.setString(1,username);
+			ResultSet rset = pstmt.executeQuery();
+			//item_id,buyer_id,purchased_date,price,category,seller_id
+			while(rset.next()) {
+				String now_item = rset.getString(1);
+				String now_buyer = rset.getString(2);
+				String now_date = rset.getString(3);
+				int now_price = rset.getInt(4);
+				String now_cate = rset.getString(5);
+				int com = now_price/10;
+				System.out.printf("%-16s | %-16s | %-16s | %-16s | %-16s | %s\n",now_cate,now_item,now_date,Integer.toString(now_price),now_buyer,Integer.toString(com));
+			}
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
 		System.out.println("[Purchased Items] \n");
 		System.out.println("item category  | item ID   | purchased date | puchased price  | seller ID ");
 		System.out.println("--------------------------------------------------------------------------");
-		/*
-		   while(rset.next(){
-		   System.out.println();
-		   }
-		 */
+		try {
+			String Q = "(select * from billing_info natural join (select item_id,category,seller_id from item_info) as A where buyer_id = ?";
+			PreparedStatement pstmt = conn.prepareStatement(Q);
+			pstmt.setString(1,username);
+			ResultSet rset = pstmt.executeQuery();
+			while(rset.next()) {
+				String now_cate = rset.getString(5);
+				String now_item = rset.getString(1);
+				String now_date = rset.getString(3);
+				String now_price = rset.getString(4);
+				String now_seller = rset.getString(6);
+				System.out.printf("%-16s|%-16s|%-16s|%-16s|%-16s\n",now_cate,now_item,now_date,now_price,now_seller);
+			}
+			pstmt.close();
+		} catch(SQLException e) {
+			System.out.println("SQLException : " + e);	
+			System.exit(1);
+		}
 	}
 
 	public static void main(String[] args) {
