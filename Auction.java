@@ -603,7 +603,7 @@ public class Auction {
 					);
 
 			try {
-				choice = scanner.next().charAt(0);;
+				choice = scanner.next().charAt(0);
 				scanner.nextLine();
 			} catch (java.util.InputMismatchException e) {
 				System.out.println("Error: Invalid input is entered. Try again.");
@@ -617,10 +617,27 @@ public class Auction {
 				/*TODO: Print Sold Items per Category */
 				System.out.println("sold item       | sold date       | seller ID   | buyer ID   | price | commissions");
 				System.out.println("----------------------------------------------------------------------------------");
-				/*
-				   while(rset.next()){
-				   }
-				 */
+				try {
+					String IQ = "select item_id,category,seller_id from item_info where category like ?";
+					String Q = String.format("select * from billing_info natural join (%s) as A",IQ);
+					PreparedStatement pstmt = conn.prepareStatement(Q);
+					pstmt.setString(1,keyword);
+					ResultSet rs = pstmt.executeQuery();
+					//  item_id   | buyer_id |       purchased_date       | price | category | seller_id
+					if(rs.next()) {
+						String now_item = rs.getString(1);
+						String now_date = rs.getString(3);
+						String now_seller = rs.getString(6);
+						String now_buyer = rs.getString(2);
+						int now_price = rs.getInt(4);
+						int comm = now_price/10;
+						System.out.printf("%s | %s | %s | %s | %s | %s\n",now_item,now_date,now_seller,now_buyer,Integer.toString(now_price),Integer.toString(comm));
+					}
+					pstmt.close();
+				} catch(SQLException e) {
+					System.out.println("SQLException : " + e);	
+					System.exit(1);
+				}
 				continue;
 			} else if (choice == '2') {
 				/*TODO: Print Account Balance for Seller */
@@ -629,10 +646,27 @@ public class Auction {
 				scanner.nextLine();
 				System.out.println("sold item       | sold date       | buyer ID   | price | commissions");
 				System.out.println("--------------------------------------------------------------------");
-				/*
-				   while(rset.next()){
-				   }
-				 */
+				try {
+					String IQ = "select item_id,category,seller_id from item_info where category like ?";
+					String Q = String.format("select * from billing_info natural join (%s) as A",IQ);
+					PreparedStatement pstmt = conn.prepareStatement(Q);
+					pstmt.setString(1,seller);
+					ResultSet rs = pstmt.executeQuery();
+					//  item_id   | buyer_id |       purchased_date       | price | category | seller_id
+					if(rs.next()) {
+						String now_item = rs.getString(1);
+						String now_date = rs.getString(3);
+						String now_seller = rs.getString(6);
+						String now_buyer = rs.getString(2);
+						int now_price = rs.getInt(4);
+						int comm = now_price/10;
+
+					}
+					pstmt.close();
+				} catch(SQLException e) {
+					System.out.println("SQLException : " + e);	
+					System.exit(1);
+				}
 				continue;
 			} else if (choice == '3') {
 				/*TODO: Print Seller Ranking */
@@ -761,7 +795,6 @@ public class Auction {
 			pstmt.setString(1,username);
 			ResultSet rset = pstmt.executeQuery();
 			while(rset.next()) {
-				System.out.print("HELLO!!!");
 				String now_cate = rset.getString(5);
 				String now_item = rset.getString(1);
 				String now_date = rset.getString(3);
