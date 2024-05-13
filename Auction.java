@@ -761,6 +761,7 @@ public class Auction {
 			pstmt.setString(1,username);
 			ResultSet rset = pstmt.executeQuery();
 			while(rset.next()) {
+				System.out.print("HELLO!!!");
 				String now_cate = rset.getString(5);
 				String now_item = rset.getString(1);
 				String now_date = rset.getString(3);
