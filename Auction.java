@@ -632,7 +632,7 @@ public class Auction {
 						String now_buyer = rs.getString(2);
 						int now_price = rs.getInt(4);
 						int comm = now_price/10;
-						System.out.printf("%s | %s | %s | %s | %s | %s\n",now_item,now_date,now_seller,now_buyer,Integer.toString(now_price),Integer.toString(comm));
+						System.out.printf("%-16s|%-16s|%-16s|%-16s|%-16s |%s\n",now_item,now_date,now_seller,now_buyer,Integer.toString(now_price),Integer.toString(comm));
 					}
 					pstmt.close();
 				} catch(SQLException e) {
@@ -661,7 +661,7 @@ public class Auction {
 						String now_buyer = rs.getString(2);
 						int now_price = rs.getInt(4);
 						int comm = now_price/10;
-						System.out.printf("%s | %s | %s | %s | %s\n",now_item,now_date,now_buyer,Integer.toString(now_price),Integer.toString(comm));
+						System.out.printf("%-16s|%-16s|%-16s|%-16s|%s\n",now_item,now_date,now_buyer,Integer.toString(now_price),Integer.toString(comm));
 					}
 					pstmt.close();
 				} catch(SQLException e) {
@@ -683,7 +683,7 @@ public class Auction {
 						String now_seller = rs.getString(1);
 						String now_count = rs.getString(2);
 						int now_got = rs.getInt(3)*9/10;
-						System.out.printf("%s | %s | %s\n",now_seller,now_count,Integer.toString(now_got));
+						System.out.printf("%-16s|%-16s|%-16s\n",now_seller,now_count,Integer.toString(now_got));
 					}
 					pstmt.close();
 				} catch(SQLException e) {
@@ -704,7 +704,7 @@ public class Auction {
 						String now_buyer = rs.getString(1);
 						String now_count = rs.getString(2);
 						String now_spent = rs.getString(3);
-						System.out.printf("%s | %s | %s\n",now_buyer,now_count,now_spent);
+						System.out.printf("%-16s|%-16s|%-16s\n",now_buyer,now_count,now_spent);
 					}
 					pstmt.close();
 				} catch(SQLException e) {
