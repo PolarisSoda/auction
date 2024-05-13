@@ -684,8 +684,13 @@ public class Auction {
 				String now_bid = rset.getString(1);
 				if(now_bid.equals(prev)) continue;
 				prev = now_bid;
-				for(int i=1; i<=9; i++) System.out.print(rset.getString(i) + " ");
-				System.out.println();
+				String now_item = rset.getString(2);
+				String now_desc = rset.getString(8);
+				String now_hb = rset.getString(4);
+				String now_hp = rset.getString(5);
+				String now_val = rset.getString(3);
+				String now_time = rset.getString(9);
+				System.out.printf("%-12s %-12s %-12s %-12s %-12s %-12s\n",now_item,now_desc,now_hb,now_hp,now_val,now_time);
 			}
 			pstmt.close();
 		} catch(SQLException e) {
